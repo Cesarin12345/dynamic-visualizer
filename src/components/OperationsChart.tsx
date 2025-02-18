@@ -9,9 +9,6 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
-  Defs,
-  LinearGradient,
-  Stop,
 } from "recharts";
 import { Card } from "@/components/ui/card";
 
@@ -35,16 +32,6 @@ const OperationsChart = ({ data, type, title }: OperationsChartProps) => {
         <ResponsiveContainer width="100%" height="100%">
           {type === "line" ? (
             <LineChart data={data}>
-              <Defs>
-                <LinearGradient id="gradient1" x1="0" y1="0" x2="0" y2="1">
-                  <Stop offset="0%" stopColor="#22c55e" stopColor="#22c55e" />
-                  <Stop offset="100%" stopColor="#22c55e00" stopColor="#22c55e00" />
-                </LinearGradient>
-                <LinearGradient id="gradient2" x1="0" y1="0" x2="0" y2="1">
-                  <Stop offset="0%" stopColor="#eab308" stopColor="#eab308" />
-                  <Stop offset="100%" stopColor="#eab30800" stopColor="#eab30800" />
-                </LinearGradient>
-              </Defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
               <XAxis
                 dataKey="name"
@@ -69,14 +56,14 @@ const OperationsChart = ({ data, type, title }: OperationsChartProps) => {
               <Line
                 type="monotone"
                 dataKey="value1"
-                stroke="url(#gradient1)"
+                stroke="#22c55e"
                 strokeWidth={3}
                 dot={false}
               />
               <Line
                 type="monotone"
                 dataKey="value2"
-                stroke="url(#gradient2)"
+                stroke="#eab308"
                 strokeWidth={3}
                 dot={false}
               />

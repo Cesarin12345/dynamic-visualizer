@@ -1,9 +1,9 @@
 
-import { Chart, Users, DollarSign, Settings } from "lucide-react";
+import { BarChart, Users, DollarSign, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const menuItems = [
-  { icon: Chart, label: "Operaciones", path: "/" },
+  { icon: BarChart, label: "Operaciones", path: "/" },
   { icon: Users, label: "RRHH", path: "/rrhh" },
   { icon: DollarSign, label: "Contabilidad", path: "/contabilidad" },
   { icon: Settings, label: "Settings", path: "/settings" },
