@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -58,6 +58,30 @@ const Index = () => {
     to: new Date(),
   });
 
+  // Estado para almacenar los datos filtrados
+  const [filteredData, setFilteredData] = useState({
+    chartData: dummyData.chartData,
+    kpis: dummyData.kpis,
+    barData: dummyData.barData,
+    explosivesData: dummyData.explosivesData,
+  });
+
+  // Efecto para filtrar los datos cuando cambien los filtros
+  useEffect(() => {
+    // Aquí implementarías la lógica real de filtrado basada en timeView y date
+    // Por ahora, solo simulamos un cambio en los datos
+    const newData = {
+      ...dummyData,
+      chartData: dummyData.chartData.map(item => ({
+        ...item,
+        name: timeView === "month" ? `Mes ${item.name}` : `Sem ${item.name}`,
+      })),
+    };
+    setFilteredData(newData);
+    
+    console.log("Filtros actualizados:", { timeView, date });
+  }, [timeView, date]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-slate-100 pb-20">
       <div className="container mx-auto px-4 py-8 animate-fade-in">
@@ -83,9 +107,14 @@ const Index = () => {
         {/* Progress Charts */}
         <div className="space-y-6 mb-8">
           <OperationsChart
-            data={dummyData.chartData}
+            data={filteredData.chartData}
             type="line"
             title="Progreso Operaciones"
+          />
+          <OperationsChart
+            data={filteredData.chartData}
+            type="bar"
+            title="Distribución por Turnos"
           />
         </div>
 
@@ -95,32 +124,32 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <KPICard
               title="Total Programado"
-              value={dummyData.kpis.totalProgrammed}
+              value={filteredData.kpis.totalProgrammed}
               large
             />
             <KPICard
               title="Efi. Vol."
-              value={dummyData.kpis.efficiencyVol}
+              value={filteredData.kpis.efficiencyVol}
               large
             />
           </div>
           {/* Second row - smaller KPIs */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <KPICard title="Ejecutado" value={dummyData.kpis.executed} />
-            <KPICard title="Cumplimiento" value={dummyData.kpis.compliance} />
-            <KPICard title="Kg/Tal" value={dummyData.kpis.kgTal} />
-            <KPICard title="F. Avance" value={dummyData.kpis.fAdvance} />
+            <KPICard title="Ejecutado" value={filteredData.kpis.executed} />
+            <KPICard title="Cumplimiento" value={filteredData.kpis.compliance} />
+            <KPICard title="Kg/Tal" value={filteredData.kpis.kgTal} />
+            <KPICard title="F. Avance" value={filteredData.kpis.fAdvance} />
           </div>
         </div>
 
         {/* Horizontal Bar Charts */}
         <div className="space-y-6">
           <HorizontalBarChart
-            data={dummyData.barData}
+            data={filteredData.barData}
             title="Actual Aceros"
           />
           <HorizontalBarChart
-            data={dummyData.explosivesData}
+            data={filteredData.explosivesData}
             title="Actual de Explosivos"
           />
         </div>
