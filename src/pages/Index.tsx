@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, ArrowUpRight } from "lucide-react";
 import KPICard from "@/components/KPICard";
 import TimeToggle from "@/components/TimeToggle";
 import OperationsChart from "@/components/OperationsChart";
@@ -96,92 +96,145 @@ const Index = () => {
     to: new Date(),
   });
 
-  // Estado para almacenar los datos filtrados
   const [filteredData, setFilteredData] = useState(dummyData.month);
 
-  // Efecto para filtrar los datos cuando cambien los filtros
   useEffect(() => {
-    // Cambiamos los datos según la vista seleccionada
     const newData = timeView === "month" ? dummyData.month : dummyData.week;
     setFilteredData(newData);
-    
     console.log("Filtros actualizados:", { timeView, date });
   }, [timeView, date]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-slate-100 pb-20">
-      <div className="container mx-auto px-4 py-8 animate-fade-in">
-        {/* Header */}
-        <div className="flex flex-col items-center justify-center mb-8 space-y-4">
-          <h1 className="text-3xl font-bold">Operaciones</h1>
-          <div className="flex items-center text-slate-400 space-x-2">
-            <CalendarIcon className="w-4 h-4" />
-            <span className="text-sm">
-              {format(currentDate, "dd 'de' MMMM yyyy, HH:mm:ss", {
-                locale: es,
-              })}
-            </span>
+    <div className="min-h-screen bg-[#0B1120] text-slate-100">
+      {/* Header con efecto de glassmorfismo */}
+      <div className="sticky top-0 z-50 backdrop-blur-md bg-slate-900/50 border-b border-slate-700/50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                <h1 className="relative text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
+                  Operaciones
+                </h1>
+              </div>
+              <div className="flex items-center text-slate-400 space-x-2 bg-slate-800/50 px-3 py-1 rounded-full">
+                <CalendarIcon className="w-4 h-4" />
+                <span className="text-sm">
+                  {format(currentDate, "dd 'de' MMMM yyyy, HH:mm:ss", {
+                    locale: es,
+                  })}
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <TimeToggle selected={timeView} onChange={setTimeView} />
+              <DatePickerWithRange date={date} setDate={setDate} />
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Filters */}
-        <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-8">
-          <TimeToggle selected={timeView} onChange={setTimeView} />
-          <DatePickerWithRange date={date} setDate={setDate} />
-        </div>
-
-        {/* Progress Charts */}
-        <div className="space-y-6 mb-8">
-          <OperationsChart
-            data={filteredData.chartData}
-            type="line"
-            title="Progreso Operaciones"
-          />
-          <OperationsChart
-            data={filteredData.chartData}
-            type="bar"
-            title="Distribución por Turnos"
-          />
-        </div>
-
-        {/* KPIs */}
-        <div className="grid gap-6 mb-8">
-          {/* First row - larger KPIs */}
+      <main className="container mx-auto px-4 py-8 space-y-8 animate-fade-in">
+        {/* KPIs Grid con diseño mejorado */}
+        <div className="grid gap-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <KPICard
               title="Total Programado"
               value={filteredData.kpis.totalProgrammed}
               large
+              className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20"
             />
             <KPICard
               title="Efi. Vol."
               value={filteredData.kpis.efficiencyVol}
               large
+              className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 hover:from-blue-500/20 hover:to-cyan-500/20"
             />
           </div>
-          {/* Second row - smaller KPIs */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <KPICard title="Ejecutado" value={filteredData.kpis.executed} />
-            <KPICard title="Cumplimiento" value={filteredData.kpis.compliance} />
-            <KPICard title="Kg/Tal" value={filteredData.kpis.kgTal} />
-            <KPICard title="F. Avance" value={filteredData.kpis.fAdvance} />
+            <KPICard
+              title="Ejecutado"
+              value={filteredData.kpis.executed}
+              className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 hover:from-emerald-500/20 hover:to-teal-500/20"
+            />
+            <KPICard
+              title="Cumplimiento"
+              value={filteredData.kpis.compliance}
+              className="bg-gradient-to-br from-orange-500/10 to-amber-500/10 hover:from-orange-500/20 hover:to-amber-500/20"
+            />
+            <KPICard
+              title="Kg/Tal"
+              value={filteredData.kpis.kgTal}
+              className="bg-gradient-to-br from-rose-500/10 to-red-500/10 hover:from-rose-500/20 hover:to-red-500/20"
+            />
+            <KPICard
+              title="F. Avance"
+              value={filteredData.kpis.fAdvance}
+              className="bg-gradient-to-br from-violet-500/10 to-purple-500/10 hover:from-violet-500/20 hover:to-purple-500/20"
+            />
           </div>
         </div>
 
-        {/* Horizontal Bar Charts */}
-        <div className="space-y-6">
-          <HorizontalBarChart
-            data={filteredData.barData}
-            title="Actual Aceros"
-          />
-          <HorizontalBarChart
-            data={filteredData.explosivesData}
-            title="Actual de Explosivos"
-          />
-        </div>
-      </div>
+        {/* Gráficos con diseño mejorado */}
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-slate-100">Progreso Operaciones</h3>
+                  <ArrowUpRight className="w-5 h-5 text-slate-400" />
+                </div>
+                <OperationsChart
+                  data={filteredData.chartData}
+                  type="line"
+                  title=""
+                />
+              </div>
+            </div>
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-slate-100">Distribución por Turnos</h3>
+                  <ArrowUpRight className="w-5 h-5 text-slate-400" />
+                </div>
+                <OperationsChart
+                  data={filteredData.chartData}
+                  type="bar"
+                  title=""
+                />
+              </div>
+            </div>
+          </div>
 
-      {/* Mobile Menu */}
+          <div className="space-y-6">
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-slate-100">Actual Aceros</h3>
+                  <ArrowUpRight className="w-5 h-5 text-slate-400" />
+                </div>
+                <HorizontalBarChart
+                  data={filteredData.barData}
+                  title=""
+                />
+              </div>
+            </div>
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-slate-100">Actual de Explosivos</h3>
+                  <ArrowUpRight className="w-5 h-5 text-slate-400" />
+                </div>
+                <HorizontalBarChart
+                  data={filteredData.explosivesData}
+                  title=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
       <MobileMenu />
     </div>
   );
