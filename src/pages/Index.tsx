@@ -14,40 +14,78 @@ import { addDays } from "date-fns";
 
 // Dummy data - replace with real data
 const dummyData = {
-  kpis: {
-    totalProgrammed: "85.3K",
-    efficiencyVol: "92.8%",
-    executed: "78.2K",
-    compliance: "91.7%",
-    kgTal: "156.4",
-    fAdvance: "94.3%",
+  month: {
+    kpis: {
+      totalProgrammed: "85.3K",
+      efficiencyVol: "92.8%",
+      executed: "78.2K",
+      compliance: "91.7%",
+      kgTal: "156.4",
+      fAdvance: "94.3%",
+    },
+    chartData: [
+      { name: "Ene", value1: 400, value2: 300 },
+      { name: "Feb", value1: 300, value2: 400 },
+      { name: "Mar", value1: 500, value2: 200 },
+      { name: "Abr", value1: 600, value2: 500 },
+      { name: "May", value1: 400, value2: 300 },
+    ],
+    barData: [
+      { name: "Brocas de 38", value: 215 },
+      { name: "Barra Conica 8", value: 1 },
+      { name: "Barra Conica 6", value: 12 },
+      { name: "Barra Conica 5", value: 6 },
+      { name: "Barra Conica 4", value: 31 },
+      { name: "Barra Conica 3", value: 3 },
+    ],
+    explosivesData: [
+      { name: "Mecha Rapida", value: 3000 },
+      { name: "Fanel Largo 4.8M", value: 60 },
+      { name: "E5000 1 X 12", value: 14349 },
+      { name: "E3000 1 1/4 X 12", value: 260 },
+      { name: "E3000 1 X 12", value: 20136 },
+      { name: "E1000 1 1/4 X 12", value: 1080 },
+      { name: "Cordon Detonante", value: 270 },
+      { name: "Carmex 2 x 8", value: 3062 },
+      { name: "Carmex 1 x 8", value: 5279 },
+    ],
   },
-  chartData: [
-    { name: "1", value1: 400, value2: 300 },
-    { name: "2", value1: 300, value2: 400 },
-    { name: "3", value1: 500, value2: 200 },
-    { name: "4", value1: 600, value2: 500 },
-    { name: "5", value1: 400, value2: 300 },
-  ],
-  barData: [
-    { name: "Brocas de 38", value: 215 },
-    { name: "Barra Conica 8", value: 1 },
-    { name: "Barra Conica 6", value: 12 },
-    { name: "Barra Conica 5", value: 6 },
-    { name: "Barra Conica 4", value: 31 },
-    { name: "Barra Conica 3", value: 3 },
-  ],
-  explosivesData: [
-    { name: "Mecha Rapida", value: 3000 },
-    { name: "Fanel Largo 4.8M", value: 60 },
-    { name: "E5000 1 X 12", value: 14349 },
-    { name: "E3000 1 1/4 X 12", value: 260 },
-    { name: "E3000 1 X 12", value: 20136 },
-    { name: "E1000 1 1/4 X 12", value: 1080 },
-    { name: "Cordon Detonante", value: 270 },
-    { name: "Carmex 2 x 8", value: 3062 },
-    { name: "Carmex 1 x 8", value: 5279 },
-  ],
+  week: {
+    kpis: {
+      totalProgrammed: "22.1K",
+      efficiencyVol: "94.2%",
+      executed: "20.5K",
+      compliance: "93.1%",
+      kgTal: "142.8",
+      fAdvance: "95.7%",
+    },
+    chartData: [
+      { name: "Lun", value1: 120, value2: 90 },
+      { name: "Mar", value1: 150, value2: 130 },
+      { name: "Mie", value1: 180, value2: 160 },
+      { name: "Jue", value1: 140, value2: 120 },
+      { name: "Vie", value1: 160, value2: 140 },
+    ],
+    barData: [
+      { name: "Brocas de 38", value: 75 },
+      { name: "Barra Conica 8", value: 0 },
+      { name: "Barra Conica 6", value: 4 },
+      { name: "Barra Conica 5", value: 2 },
+      { name: "Barra Conica 4", value: 8 },
+      { name: "Barra Conica 3", value: 1 },
+    ],
+    explosivesData: [
+      { name: "Mecha Rapida", value: 800 },
+      { name: "Fanel Largo 4.8M", value: 15 },
+      { name: "E5000 1 X 12", value: 3500 },
+      { name: "E3000 1 1/4 X 12", value: 80 },
+      { name: "E3000 1 X 12", value: 5200 },
+      { name: "E1000 1 1/4 X 12", value: 250 },
+      { name: "Cordon Detonante", value: 70 },
+      { name: "Carmex 2 x 8", value: 800 },
+      { name: "Carmex 1 x 8", value: 1200 },
+    ],
+  },
 };
 
 const Index = () => {
@@ -59,24 +97,12 @@ const Index = () => {
   });
 
   // Estado para almacenar los datos filtrados
-  const [filteredData, setFilteredData] = useState({
-    chartData: dummyData.chartData,
-    kpis: dummyData.kpis,
-    barData: dummyData.barData,
-    explosivesData: dummyData.explosivesData,
-  });
+  const [filteredData, setFilteredData] = useState(dummyData.month);
 
   // Efecto para filtrar los datos cuando cambien los filtros
   useEffect(() => {
-    // Aquí implementarías la lógica real de filtrado basada en timeView y date
-    // Por ahora, solo simulamos un cambio en los datos
-    const newData = {
-      ...dummyData,
-      chartData: dummyData.chartData.map(item => ({
-        ...item,
-        name: timeView === "month" ? `Mes ${item.name}` : `Sem ${item.name}`,
-      })),
-    };
+    // Cambiamos los datos según la vista seleccionada
+    const newData = timeView === "month" ? dummyData.month : dummyData.week;
     setFilteredData(newData);
     
     console.log("Filtros actualizados:", { timeView, date });
