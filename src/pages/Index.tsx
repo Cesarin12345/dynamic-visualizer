@@ -186,6 +186,12 @@ const Index = () => {
 
   const [filteredData, setFilteredData] = useState(dummyData.month.day);
 
+  const calculateProgress = (executed: string, programmed: string) => {
+    const execValue = parseFloat(executed.replace('K', ''));
+    const progValue = parseFloat(programmed.replace('K', ''));
+    return (execValue / progValue) * 100;
+  };
+
   useEffect(() => {
     const periodData = timeView === "month" ? dummyData.month : dummyData.week;
     const newData = shiftView === "day" ? periodData.day : periodData.night;
@@ -214,33 +220,35 @@ const Index = () => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <TimeToggle selected={timeView} onChange={setTimeView} />
-              <div className="inline-flex p-1 bg-slate-800/50 backdrop-blur-sm rounded-lg">
-                <Button
-                  variant="ghost"
-                  className={`px-6 py-2 transition-all duration-300 ${
-                    shiftView === "day"
-                      ? "bg-slate-700/70 text-slate-100"
-                      : "text-slate-400 hover:text-slate-100"
-                  }`}
-                  onClick={() => setShiftView("day")}
-                >
-                  Día
-                </Button>
-                <Button
-                  variant="ghost"
-                  className={`px-6 py-2 transition-all duration-300 ${
-                    shiftView === "night"
-                      ? "bg-slate-700/70 text-slate-100"
-                      : "text-slate-400 hover:text-slate-100"
-                  }`}
-                  onClick={() => setShiftView("night")}
-                >
-                  Noche
-                </Button>
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <div className="flex items-center gap-4">
+                <TimeToggle selected={timeView} onChange={setTimeView} />
+                <div className="inline-flex p-1 bg-slate-800/50 backdrop-blur-sm rounded-lg">
+                  <Button
+                    variant="ghost"
+                    className={`px-6 py-2 transition-all duration-300 ${
+                      shiftView === "day"
+                        ? "bg-slate-700/70 text-slate-100"
+                        : "text-slate-400 hover:text-slate-100"
+                    }`}
+                    onClick={() => setShiftView("day")}
+                  >
+                    Día
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className={`px-6 py-2 transition-all duration-300 ${
+                      shiftView === "night"
+                        ? "bg-slate-700/70 text-slate-100"
+                        : "text-slate-400 hover:text-slate-100"
+                    }`}
+                    onClick={() => setShiftView("night")}
+                  >
+                    Noche
+                  </Button>
+                </div>
               </div>
-              <DatePickerWithRange date={date} setDate={setDate} />
+              <DatePickerWithRange date={date} setDate={setDate} className="w-full md:w-auto" />
             </div>
           </div>
         </div>
@@ -248,24 +256,33 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8 space-y-8 animate-fade-in">
         <div className="grid gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <KPICard
-              title="Total Programado"
-              value={filteredData.kpis.totalProgrammed}
+              title="Total Programado / Ejecutado"
+              value={
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span>Programado: {filteredData.kpis.totalProgrammed}</span>
+                    <span>Ejecutado: {filteredData.kpis.executed}</span>
+                  </div>
+                  <div className="relative h-2 bg-slate-700 rounded-full overflow-hidden">
+                    <div 
+                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500"
+                      style={{ 
+                        width: `${calculateProgress(filteredData.kpis.executed, filteredData.kpis.totalProgrammed)}%` 
+                      }}
+                    />
+                  </div>
+                </div>
+              }
               large
               className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20"
-            />
-            <KPICard
-              title="Efi. Vol."
-              value={filteredData.kpis.efficiencyVol}
-              large
-              className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 hover:from-blue-500/20 hover:to-cyan-500/20"
             />
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <KPICard
-              title="Ejecutado"
-              value={filteredData.kpis.executed}
+              title="Efi. Vol."
+              value={filteredData.kpis.efficiencyVol}
               className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 hover:from-emerald-500/20 hover:to-teal-500/20"
             />
             <KPICard
