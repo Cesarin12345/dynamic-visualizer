@@ -15,14 +15,16 @@ import { es } from "date-fns/locale";
 interface DatePickerWithRangeProps {
   date: DateRange | undefined;
   setDate: (date: DateRange | undefined) => void;
+  className?: string;
 }
 
 export function DatePickerWithRange({
   date,
   setDate,
+  className,
 }: DatePickerWithRangeProps) {
   return (
-    <div className="inline-flex items-center">
+    <div className={cn("inline-flex items-center", className)}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
