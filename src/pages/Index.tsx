@@ -258,12 +258,12 @@ const Index = () => {
         <div className="grid gap-6">
           <div className="grid grid-cols-1 gap-6">
             <KPICard
-              title="Total Programado / Ejecutado"
+              title="Total Ejecutado / Programado"
               value={
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span>Programado: {filteredData.kpis.totalProgrammed}</span>
                     <span>Ejecutado: {filteredData.kpis.executed}</span>
+                    <span>Programado: {filteredData.kpis.totalProgrammed}</span>
                   </div>
                   <div className="relative h-2 bg-slate-700 rounded-full overflow-hidden">
                     <div 
@@ -272,6 +272,9 @@ const Index = () => {
                         width: `${calculateProgress(filteredData.kpis.executed, filteredData.kpis.totalProgrammed)}%` 
                       }}
                     />
+                  </div>
+                  <div className="text-right text-sm text-slate-400">
+                    {calculateProgress(filteredData.kpis.executed, filteredData.kpis.totalProgrammed).toFixed(1)}%
                   </div>
                 </div>
               }
