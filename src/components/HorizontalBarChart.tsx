@@ -16,7 +16,7 @@ const HorizontalBarChart = ({ data, title }: HorizontalBarChartProps) => {
   return (
     <Card className="p-6 bg-background/30 backdrop-blur-sm border-slate-800/50">
       <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>
-      <div className="h-[450px] w-full">
+      <div className="h-[400px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data}
@@ -29,7 +29,6 @@ const HorizontalBarChart = ({ data, title }: HorizontalBarChartProps) => {
               type="category"
               stroke="#94a3b8"
               tick={{ fill: "#94a3b8" }}
-              width={100}
             />
             <Tooltip
               contentStyle={{
@@ -44,7 +43,7 @@ const HorizontalBarChart = ({ data, title }: HorizontalBarChartProps) => {
               dataKey="value"
               fill="#f97316"
               radius={[0, 4, 4, 0]}
-              barSize={24}
+              barSize={20}
             />
           </BarChart>
         </ResponsiveContainer>

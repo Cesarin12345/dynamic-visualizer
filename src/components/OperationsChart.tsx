@@ -28,7 +28,7 @@ const OperationsChart = ({ data, type, title }: OperationsChartProps) => {
   return (
     <Card className="p-6 bg-background/30 backdrop-blur-sm border-slate-800/50">
       <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>
-      <div className="h-[400px] w-full">
+      <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           {type === "line" ? (
             <LineChart data={data}>
