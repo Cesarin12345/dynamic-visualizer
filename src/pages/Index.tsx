@@ -306,10 +306,10 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-6">
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold text-slate-100">Progreso Operaciones</h3>
                   <ArrowUpRight className="w-5 h-5 text-slate-400" />
@@ -322,7 +322,7 @@ const Index = () => {
               </div>
             </div>
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold text-slate-100">Distribución por Turnos</h3>
                   <ArrowUpRight className="w-5 h-5 text-slate-400" />
@@ -338,7 +338,7 @@ const Index = () => {
 
           <div className="space-y-6">
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold text-slate-100">Actual Aceros</h3>
                   <ArrowUpRight className="w-5 h-5 text-slate-400" />
@@ -350,7 +350,7 @@ const Index = () => {
               </div>
             </div>
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold text-slate-100">Actual de Explosivos</h3>
                   <ArrowUpRight className="w-5 h-5 text-slate-400" />
