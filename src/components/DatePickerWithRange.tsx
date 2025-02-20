@@ -16,12 +16,24 @@ interface DatePickerWithRangeProps {
   date: DateRange | undefined;
   setDate: (date: DateRange | undefined) => void;
   className?: string;
+  viewMode: "month" | "week";
 }
+
+const years = [2024, 2025];
+const months = [
+  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+];
+
+const generateWeeks = (month: string) => {
+  return [`${month}-S1`, `${month}-S2`, `${month}-S3`, `${month}-S4`];
+};
 
 export function DatePickerWithRange({
   date,
   setDate,
   className,
+  viewMode
 }: DatePickerWithRangeProps) {
   return (
     <div className={cn("inline-flex items-center", className)}>
@@ -50,15 +62,64 @@ export function DatePickerWithRange({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
-            numberOfMonths={2}
-            locale={es}
-          />
+          {viewMode === "month" ? (
+            <div className="p-3 space-y-3">
+              {years.map(year => (
+                <div key={year}>
+                  <h3 className="font-semibold mb-2">{year}</h3>
+                  <div className="grid grid-cols-3 gap-2">
+                    {months.map(month => (
+                      <Button
+                        key={`${month}-${year}`}
+                        variant="outline"
+                        className="text-sm"
+                        onClick={() => {
+                          const fromDate = new Date(year, months.indexOf(month), 1);
+                          const toDate = new Date(year, months.indexOf(month) + 1, 0);
+                          setDate({ from: fromDate, to: toDate });
+                        }}
+                      >
+                        {month}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-3 space-y-3">
+              {years.map(year => (
+                <div key={year}>
+                  <h3 className="font-semibold mb-2">{year}</h3>
+                  <div className="space-y-2">
+                    {months.map(month => (
+                      <div key={`${month}-${year}`} className="space-y-1">
+                        <p className="text-sm text-slate-400">{month}</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {generateWeeks(month).map(week => (
+                            <Button
+                              key={`${week}-${year}`}
+                              variant="outline"
+                              className="text-sm"
+                              onClick={() => {
+                                const monthIndex = months.indexOf(month);
+                                const weekNum = parseInt(week.split('-S')[1]);
+                                const fromDate = new Date(year, monthIndex, (weekNum - 1) * 7 + 1);
+                                const toDate = new Date(year, monthIndex, weekNum * 7);
+                                setDate({ from: fromDate, to: toDate });
+                              }}
+                            >
+                              {week.split('-')[1]}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </PopoverContent>
       </Popover>
     </div>

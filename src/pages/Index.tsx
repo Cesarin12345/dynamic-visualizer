@@ -248,7 +248,12 @@ const Index = () => {
                   </Button>
                 </div>
               </div>
-              <DatePickerWithRange date={date} setDate={setDate} className="flex-1 min-w-[200px]" />
+              <DatePickerWithRange 
+                date={date} 
+                setDate={setDate} 
+                className="flex-1 min-w-[200px]"
+                viewMode={timeView}
+              />
             </div>
           </div>
         </div>
