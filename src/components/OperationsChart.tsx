@@ -36,8 +36,8 @@ const CustomTooltip = ({ active, payload, label, type }: any) => {
           </>
         ) : (
           <>
-            <p className="text-orange-400">Kg/Tal Día: {payload[0].value}</p>
-            <p className="text-orange-300">Kg/Tal Noche: {payload[1].value}</p>
+            <p className="text-orange-400">Kg/Tal Día: {payload[0].value.toFixed(2)}</p>
+            <p className="text-orange-300">Kg/Tal Noche: {payload[1].value.toFixed(2)}</p>
           </>
         )}
       </div>
@@ -97,17 +97,21 @@ const OperationsChart = ({ data, type, title }: OperationsChartProps) => {
                 stroke="#94a3b8"
                 tick={{ fill: "#94a3b8" }}
                 tickLine={{ stroke: "#94a3b8" }}
+                domain={[0, 10]}
+                tickCount={11}
               />
               <Tooltip content={<CustomTooltip type="bar" />} />
               <Bar 
                 name="Kg/Tal Día"
                 dataKey="value1" 
                 fill="#f97316" 
+                stackId="a"
               />
               <Bar 
                 name="Kg/Tal Noche"
                 dataKey="value2" 
                 fill="#fb923c" 
+                stackId="a"
               />
             </BarChart>
           )}
