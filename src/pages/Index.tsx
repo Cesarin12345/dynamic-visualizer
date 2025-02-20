@@ -202,9 +202,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-[#0B1120] text-slate-100">
       <div className="sticky top-0 z-50 backdrop-blur-md bg-slate-900/50 border-b border-slate-700/50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center space-x-4">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
               <div className="relative">
                 <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
                 <h1 className="relative text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
@@ -220,13 +220,13 @@ const Index = () => {
                 </span>
               </div>
             </div>
-            <div className="flex flex-col md:flex-row items-center gap-4">
-              <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2 flex-1 min-w-[200px]">
                 <TimeToggle selected={timeView} onChange={setTimeView} />
-                <div className="inline-flex p-1 bg-slate-800/50 backdrop-blur-sm rounded-lg">
+                <div className="inline-flex p-0.5 bg-slate-800/50 backdrop-blur-sm rounded-lg flex-1">
                   <Button
                     variant="ghost"
-                    className={`px-6 py-2 transition-all duration-300 ${
+                    className={`flex-1 px-4 py-1.5 transition-all duration-300 text-sm ${
                       shiftView === "day"
                         ? "bg-slate-700/70 text-slate-100"
                         : "text-slate-400 hover:text-slate-100"
@@ -237,7 +237,7 @@ const Index = () => {
                   </Button>
                   <Button
                     variant="ghost"
-                    className={`px-6 py-2 transition-all duration-300 ${
+                    className={`flex-1 px-4 py-1.5 transition-all duration-300 text-sm ${
                       shiftView === "night"
                         ? "bg-slate-700/70 text-slate-100"
                         : "text-slate-400 hover:text-slate-100"
@@ -248,7 +248,7 @@ const Index = () => {
                   </Button>
                 </div>
               </div>
-              <DatePickerWithRange date={date} setDate={setDate} className="w-full md:w-auto" />
+              <DatePickerWithRange date={date} setDate={setDate} className="flex-1 min-w-[200px]" />
             </div>
           </div>
         </div>
@@ -265,7 +265,7 @@ const Index = () => {
                     <span>Ejecutado: {filteredData.kpis.executed}</span>
                     <span>Programado: {filteredData.kpis.totalProgrammed}</span>
                   </div>
-                  <div className="relative h-2 bg-slate-700 rounded-full overflow-hidden">
+                  <div className="relative h-4 bg-slate-700 rounded-full overflow-hidden">
                     <div 
                       className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500"
                       style={{ 
