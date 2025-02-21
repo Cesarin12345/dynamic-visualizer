@@ -1,9 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
 import { 
-  Calendar as CalendarIcon, 
   ArrowUpRight, 
   Pickaxe,
   Factory,
@@ -189,8 +186,7 @@ const dummyData = {
 
 const Index = () => {
   const [timeView, setTimeView] = useState<"month" | "week">("month");
-  const [shiftView, setShiftView] = useState<"day" | "night">("day");
-  const currentDate = new Date();
+  const [shiftView, setShiftView] = useState<"day" | "night" | "both">("both");
   const [date, setDate] = useState<DateRange | undefined>({
     from: addDays(new Date(), -30),
     to: new Date(),
@@ -204,9 +200,34 @@ const Index = () => {
     return (execValue / progValue) * 100;
   };
 
+  const getShiftData = (periodData: any, shift: "day" | "night" | "both") => {
+    if (shift === "both") {
+      return {
+        kpis: {
+          totalProgrammed: (parseFloat(periodData.day.kpis.totalProgrammed.replace('K', '')) + 
+                          parseFloat(periodData.night.kpis.totalProgrammed.replace('K', ''))).toFixed(1) + 'K',
+          efficiencyVol: ((parseFloat(periodData.day.kpis.efficiencyVol.replace('%', '')) + 
+                          parseFloat(periodData.night.kpis.efficiencyVol.replace('%', ''))) / 2).toFixed(1) + '%',
+          executed: (parseFloat(periodData.day.kpis.executed.replace('K', '')) + 
+                    parseFloat(periodData.night.kpis.executed.replace('K', ''))).toFixed(1) + 'K',
+          compliance: ((parseFloat(periodData.day.kpis.compliance.replace('%', '')) + 
+                      parseFloat(periodData.night.kpis.compliance.replace('%', ''))) / 2).toFixed(1) + '%',
+          kgTal: ((parseFloat(periodData.day.kpis.kgTal) + 
+                  parseFloat(periodData.night.kpis.kgTal)) / 2).toFixed(1),
+          fAdvance: ((parseFloat(periodData.day.kpis.fAdvance.replace('%', '')) + 
+                    parseFloat(periodData.night.kpis.fAdvance.replace('%', ''))) / 2).toFixed(1) + '%',
+        },
+        chartData: periodData.day.chartData,
+        barData: periodData.day.barData,
+        explosivesData: periodData.day.explosivesData,
+      };
+    }
+    return periodData[shift];
+  };
+
   useEffect(() => {
     const periodData = timeView === "month" ? dummyData.month : dummyData.week;
-    const newData = shiftView === "day" ? periodData.day : periodData.night;
+    const newData = getShiftData(periodData, shiftView);
     setFilteredData(newData);
     console.log("Filtros actualizados:", { timeView, shiftView, date });
   }, [timeView, shiftView, date]);
@@ -226,14 +247,6 @@ const Index = () => {
                   Operaciones
                 </h1>
               </div>
-              <div className="flex items-center text-slate-400 space-x-2 bg-slate-800/30 backdrop-blur-xl px-4 py-2 rounded-full border border-slate-700/30">
-                <CalendarIcon className="w-4 h-4" />
-                <span className="text-sm font-medium">
-                  {format(currentDate, "dd 'de' MMMM yyyy, HH:mm:ss", {
-                    locale: es,
-                  })}
-                </span>
-              </div>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 flex-1 min-w-[200px]">
@@ -246,7 +259,7 @@ const Index = () => {
                         ? "bg-slate-700/50 text-white shadow-lg"
                         : "text-slate-400 hover:text-slate-100"
                     }`}
-                    onClick={() => setShiftView("day")}
+                    onClick={() => setShiftView(shiftView === "day" ? "both" : "day")}
                   >
                     Día
                   </Button>
@@ -257,7 +270,7 @@ const Index = () => {
                         ? "bg-slate-700/50 text-white shadow-lg"
                         : "text-slate-400 hover:text-slate-100"
                     }`}
-                    onClick={() => setShiftView("night")}
+                    onClick={() => setShiftView(shiftView === "night" ? "both" : "night")}
                   >
                     Noche
                   </Button>
