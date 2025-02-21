@@ -22,6 +22,7 @@ interface OperationsChartProps {
   data: ChartData[];
   type: "line" | "bar";
   title: string;
+  shift?: "day" | "night" | "both";
 }
 
 const CustomTooltip = ({ active, payload, label, type }: any) => {
@@ -36,8 +37,16 @@ const CustomTooltip = ({ active, payload, label, type }: any) => {
           </>
         ) : (
           <>
-            <p className="text-orange-400">Kg/Tal Día: {payload[0].value.toFixed(2)}</p>
-            <p className="text-orange-300">Kg/Tal Noche: {payload[1].value.toFixed(2)}</p>
+            {payload.length > 1 ? (
+              <>
+                <p className="text-orange-400">Kg/Tal Día: {payload[0].value}</p>
+                <p className="text-orange-300">Kg/Tal Noche: {payload[1].value}</p>
+              </>
+            ) : (
+              <p className="text-orange-400">
+                Kg/Tal {payload[0].name.includes("Día") ? "Día" : "Noche"}: {payload[0].value}
+              </p>
+            )}
           </>
         )}
       </div>
@@ -46,7 +55,44 @@ const CustomTooltip = ({ active, payload, label, type }: any) => {
   return null;
 };
 
-const OperationsChart = ({ data, type, title }: OperationsChartProps) => {
+const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartProps) => {
+  const renderBars = () => {
+    if (shift === "both") {
+      return (
+        <>
+          <Bar 
+            name="Kg/Tal Día"
+            dataKey="value1" 
+            fill="#f97316" 
+            stackId="a"
+          />
+          <Bar 
+            name="Kg/Tal Noche"
+            dataKey="value2" 
+            fill="#fb923c" 
+            stackId="a"
+          />
+        </>
+      );
+    } else if (shift === "day") {
+      return (
+        <Bar 
+          name="Kg/Tal Día"
+          dataKey="value1" 
+          fill="#f97316"
+        />
+      );
+    } else {
+      return (
+        <Bar 
+          name="Kg/Tal Noche"
+          dataKey="value2" 
+          fill="#fb923c"
+        />
+      );
+    }
+  };
+
   return (
     <Card className="bg-transparent border-none">
       {title && <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>}
@@ -107,18 +153,7 @@ const OperationsChart = ({ data, type, title }: OperationsChartProps) => {
                 content={<CustomTooltip type="bar" />}
                 wrapperStyle={{ outline: 'none' }}
               />
-              <Bar 
-                name="Kg/Tal Día"
-                dataKey="value1" 
-                fill="#f97316" 
-                stackId="a"
-              />
-              <Bar 
-                name="Kg/Tal Noche"
-                dataKey="value2" 
-                fill="#fb923c" 
-                stackId="a"
-              />
+              {renderBars()}
             </BarChart>
           )}
         </ResponsiveContainer>

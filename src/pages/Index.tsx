@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { 
   ArrowUpRight, 
@@ -217,9 +216,12 @@ const Index = () => {
           fAdvance: ((parseFloat(periodData.day.kpis.fAdvance.replace('%', '')) + 
                     parseFloat(periodData.night.kpis.fAdvance.replace('%', ''))) / 2).toFixed(1) + '%',
         },
-        chartData: periodData.day.chartData,
-        barData: periodData.day.barData,
-        explosivesData: periodData.day.explosivesData,
+        chartData: periodData.day.chartData.map((item: any, index: number) => ({
+          ...item,
+          value2: periodData.night.chartData[index].value2
+        })),
+        barData: shift === "day" ? periodData.day.barData : periodData.night.barData,
+        explosivesData: shift === "day" ? periodData.day.explosivesData : periodData.night.explosivesData,
       };
     }
     return periodData[shift];
@@ -361,6 +363,7 @@ const Index = () => {
                   data={filteredData.chartData}
                   type="line"
                   title=""
+                  shift={shiftView}
                 />
               </div>
             </div>
@@ -379,6 +382,7 @@ const Index = () => {
                   data={filteredData.chartData}
                   type="bar"
                   title=""
+                  shift={shiftView}
                 />
               </div>
             </div>
