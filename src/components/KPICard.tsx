@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ArrowUpRight } from "lucide-react";
@@ -14,8 +13,8 @@ const KPICard = ({ title, value, className, large = false }: KPICardProps) => {
   return (
     <Card
       className={cn(
-        "relative overflow-hidden backdrop-blur-sm border-slate-800/50 transition-all duration-300",
-        "group hover:scale-[1.02] hover:-translate-y-0.5",
+        "relative overflow-hidden backdrop-blur-xl border-slate-800/30",
+        "group hover:scale-[1.02] hover:-translate-y-0.5 transition-all duration-300",
         className
       )}
     >
@@ -37,7 +36,6 @@ const KPICard = ({ title, value, className, large = false }: KPICardProps) => {
           {value}
         </div>
       </div>
-      <div className="absolute inset-px bg-gradient-to-b from-slate-800/5 to-slate-800/20 pointer-events-none" />
     </Card>
   );
 };

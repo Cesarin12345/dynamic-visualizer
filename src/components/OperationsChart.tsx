@@ -48,8 +48,8 @@ const CustomTooltip = ({ active, payload, label, type }: any) => {
 
 const OperationsChart = ({ data, type, title }: OperationsChartProps) => {
   return (
-    <Card className="p-6 bg-background/30 backdrop-blur-sm border-slate-800/50">
-      <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>
+    <Card className="bg-transparent border-none">
+      {title && <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>}
       <div className="h-[400px] w-full min-w-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           {type === "line" ? (
@@ -66,7 +66,10 @@ const OperationsChart = ({ data, type, title }: OperationsChartProps) => {
                 tick={{ fill: "#94a3b8" }}
                 tickLine={{ stroke: "#94a3b8" }}
               />
-              <Tooltip content={<CustomTooltip type="line" />} />
+              <Tooltip 
+                content={<CustomTooltip type="line" />}
+                wrapperStyle={{ outline: 'none' }}
+              />
               <Line
                 name="Programado"
                 type="monotone"
@@ -100,7 +103,10 @@ const OperationsChart = ({ data, type, title }: OperationsChartProps) => {
                 domain={[0, 10]}
                 tickCount={11}
               />
-              <Tooltip content={<CustomTooltip type="bar" />} />
+              <Tooltip 
+                content={<CustomTooltip type="bar" />}
+                wrapperStyle={{ outline: 'none' }}
+              />
               <Bar 
                 name="Kg/Tal Día"
                 dataKey="value1" 

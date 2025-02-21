@@ -200,20 +200,20 @@ const Index = () => {
   }, [timeView, shiftView, date]);
 
   return (
-    <div className="min-h-screen bg-[#0B1120] text-slate-100">
-      <div className="sticky top-0 z-50 backdrop-blur-md bg-slate-900/50 border-b border-slate-700/50">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex flex-col gap-3">
+    <div className="min-h-screen bg-gradient-to-b from-[#0B1120] to-[#0F172A] text-slate-100">
+      <div className="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/30 border-b border-slate-700/30">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-lg blur"></div>
                 <h1 className="relative text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
                   Operaciones
                 </h1>
               </div>
-              <div className="flex items-center text-slate-400 space-x-2 bg-slate-800/50 px-3 py-1 rounded-full">
+              <div className="flex items-center text-slate-400 space-x-2 bg-slate-800/30 backdrop-blur-xl px-4 py-2 rounded-full">
                 <CalendarIcon className="w-4 h-4" />
-                <span className="text-sm">
+                <span className="text-sm font-medium">
                   {format(currentDate, "dd 'de' MMMM yyyy, HH:mm:ss", {
                     locale: es,
                   })}
@@ -223,12 +223,12 @@ const Index = () => {
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 flex-1 min-w-[200px]">
                 <TimeToggle selected={timeView} onChange={setTimeView} />
-                <div className="inline-flex p-0.5 bg-slate-800/50 backdrop-blur-sm rounded-lg flex-1">
+                <div className="inline-flex p-0.5 bg-slate-800/30 backdrop-blur-xl rounded-lg flex-1">
                   <Button
                     variant="ghost"
-                    className={`flex-1 px-4 py-1.5 transition-all duration-300 text-sm ${
+                    className={`flex-1 px-4 py-1.5 transition-all duration-300 text-sm font-medium rounded-md ${
                       shiftView === "day"
-                        ? "bg-slate-700/70 text-slate-100"
+                        ? "bg-slate-700/50 text-white shadow-lg"
                         : "text-slate-400 hover:text-slate-100"
                     }`}
                     onClick={() => setShiftView("day")}
@@ -237,9 +237,9 @@ const Index = () => {
                   </Button>
                   <Button
                     variant="ghost"
-                    className={`flex-1 px-4 py-1.5 transition-all duration-300 text-sm ${
+                    className={`flex-1 px-4 py-1.5 transition-all duration-300 text-sm font-medium rounded-md ${
                       shiftView === "night"
-                        ? "bg-slate-700/70 text-slate-100"
+                        ? "bg-slate-700/50 text-white shadow-lg"
                         : "text-slate-400 hover:text-slate-100"
                     }`}
                     onClick={() => setShiftView("night")}
@@ -270,9 +270,9 @@ const Index = () => {
                     <span>Ejecutado: {filteredData.kpis.executed}</span>
                     <span>Programado: {filteredData.kpis.totalProgrammed}</span>
                   </div>
-                  <div className="relative h-4 bg-slate-700 rounded-full overflow-hidden">
+                  <div className="relative h-3 bg-slate-700/30 rounded-full overflow-hidden backdrop-blur-xl">
                     <div 
-                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500"
+                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full transition-all duration-500"
                       style={{ 
                         width: `${calculateProgress(filteredData.kpis.executed, filteredData.kpis.totalProgrammed)}%` 
                       }}
@@ -284,39 +284,39 @@ const Index = () => {
                 </div>
               }
               large
-              className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20"
+              className="bg-gradient-to-br from-purple-500/5 to-pink-500/5 hover:from-purple-500/10 hover:to-pink-500/10 backdrop-blur-xl border-purple-500/10"
             />
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <KPICard
               title="Efi. Vol."
               value={filteredData.kpis.efficiencyVol}
-              className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 hover:from-emerald-500/20 hover:to-teal-500/20"
+              className="bg-gradient-to-br from-emerald-500/5 to-teal-500/5 hover:from-emerald-500/10 hover:to-teal-500/10 backdrop-blur-xl border-emerald-500/10"
             />
             <KPICard
               title="Cumplimiento"
               value={filteredData.kpis.compliance}
-              className="bg-gradient-to-br from-orange-500/10 to-amber-500/10 hover:from-orange-500/20 hover:to-amber-500/20"
+              className="bg-gradient-to-br from-orange-500/5 to-amber-500/5 hover:from-orange-500/10 hover:to-amber-500/10 backdrop-blur-xl border-orange-500/10"
             />
             <KPICard
               title="Kg/Tal"
               value={filteredData.kpis.kgTal}
-              className="bg-gradient-to-br from-rose-500/10 to-red-500/10 hover:from-rose-500/20 hover:to-red-500/20"
+              className="bg-gradient-to-br from-rose-500/5 to-red-500/5 hover:from-rose-500/10 hover:to-red-500/10 backdrop-blur-xl border-rose-500/10"
             />
             <KPICard
               title="F. Avance"
               value={filteredData.kpis.fAdvance}
-              className="bg-gradient-to-br from-violet-500/10 to-purple-500/10 hover:from-violet-500/20 hover:to-purple-500/20"
+              className="bg-gradient-to-br from-violet-500/5 to-purple-500/5 hover:from-violet-500/10 hover:to-purple-500/10 backdrop-blur-xl border-violet-500/10"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-6">
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
-              <div className="p-4 sm:p-6">
+            <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl">
+              <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-slate-100">Progreso Operaciones</h3>
+                  <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">Progreso Operaciones</h3>
                   <ArrowUpRight className="w-5 h-5 text-slate-400" />
                 </div>
                 <OperationsChart
@@ -326,10 +326,10 @@ const Index = () => {
                 />
               </div>
             </div>
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
-              <div className="p-4 sm:p-6">
+            <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl">
+              <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-slate-100">Distribución por Turnos</h3>
+                  <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-amber-400">Distribución por Turnos</h3>
                   <ArrowUpRight className="w-5 h-5 text-slate-400" />
                 </div>
                 <OperationsChart
@@ -342,10 +342,10 @@ const Index = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
-              <div className="p-4 sm:p-6">
+            <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl">
+              <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-slate-100">Actual Aceros</h3>
+                  <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-400">Actual Aceros</h3>
                   <ArrowUpRight className="w-5 h-5 text-slate-400" />
                 </div>
                 <HorizontalBarChart
@@ -354,10 +354,10 @@ const Index = () => {
                 />
               </div>
             </div>
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
-              <div className="p-4 sm:p-6">
+            <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl">
+              <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-slate-100">Actual de Explosivos</h3>
+                  <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-purple-400">Actual de Explosivos</h3>
                   <ArrowUpRight className="w-5 h-5 text-slate-400" />
                 </div>
                 <HorizontalBarChart
