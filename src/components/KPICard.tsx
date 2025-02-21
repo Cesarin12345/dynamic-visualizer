@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ArrowUpRight } from "lucide-react";
@@ -7,9 +8,10 @@ interface KPICardProps {
   value: string | number | React.ReactNode;
   className?: string;
   large?: boolean;
+  icon?: React.ReactNode;
 }
 
-const KPICard = ({ title, value, className, large = false }: KPICardProps) => {
+const KPICard = ({ title, value, className, large = false, icon }: KPICardProps) => {
   return (
     <Card
       className={cn(
@@ -25,7 +27,10 @@ const KPICard = ({ title, value, className, large = false }: KPICardProps) => {
         )}
       >
         <div className="flex justify-between items-start">
-          <h3 className="text-slate-400 font-medium text-sm">{title}</h3>
+          <div className="flex items-center gap-2">
+            {icon}
+            <h3 className="text-slate-400 font-medium text-sm">{title}</h3>
+          </div>
           <ArrowUpRight className="w-5 h-5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
         <div className={cn(

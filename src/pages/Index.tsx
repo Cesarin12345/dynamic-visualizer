@@ -1,7 +1,19 @@
+
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon, ArrowUpRight } from "lucide-react";
+import { 
+  Calendar as CalendarIcon, 
+  ArrowUpRight, 
+  Pickaxe,
+  Factory,
+  Truck,
+  Gauge,
+  Hammer,
+  HardHat,
+  Shovel,
+  Drill
+} from "lucide-react";
 import KPICard from "@/components/KPICard";
 import TimeToggle from "@/components/TimeToggle";
 import OperationsChart from "@/components/OperationsChart";
@@ -200,18 +212,21 @@ const Index = () => {
   }, [timeView, shiftView, date]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0B1120] to-[#0F172A] text-slate-100">
+    <div className="min-h-screen bg-gradient-to-b from-[#0B1120] via-[#0F172A] to-[#1E293B] text-slate-100">
+      <div className="fixed inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] pointer-events-none" />
+      
       <div className="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/30 border-b border-slate-700/30">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <div className="relative">
+              <div className="relative flex items-center gap-3">
                 <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-lg blur"></div>
+                <HardHat className="w-8 h-8 text-amber-500" />
                 <h1 className="relative text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
                   Operaciones
                 </h1>
               </div>
-              <div className="flex items-center text-slate-400 space-x-2 bg-slate-800/30 backdrop-blur-xl px-4 py-2 rounded-full">
+              <div className="flex items-center text-slate-400 space-x-2 bg-slate-800/30 backdrop-blur-xl px-4 py-2 rounded-full border border-slate-700/30">
                 <CalendarIcon className="w-4 h-4" />
                 <span className="text-sm font-medium">
                   {format(currentDate, "dd 'de' MMMM yyyy, HH:mm:ss", {
@@ -259,11 +274,12 @@ const Index = () => {
         </div>
       </div>
 
-      <main className="container mx-auto px-4 py-8 space-y-8 animate-fade-in">
+      <main className="container mx-auto px-4 py-8 space-y-8 animate-fade-in relative z-10">
         <div className="grid gap-6">
           <div className="grid grid-cols-1 gap-6">
             <KPICard
               title="Total Ejecutado / Programado"
+              icon={<Gauge className="w-5 h-5 text-purple-400" />}
               value={
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
@@ -290,21 +306,25 @@ const Index = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <KPICard
               title="Efi. Vol."
+              icon={<Factory className="w-5 h-5 text-emerald-400" />}
               value={filteredData.kpis.efficiencyVol}
               className="bg-gradient-to-br from-emerald-500/5 to-teal-500/5 hover:from-emerald-500/10 hover:to-teal-500/10 backdrop-blur-xl border-emerald-500/10"
             />
             <KPICard
               title="Cumplimiento"
+              icon={<Pickaxe className="w-5 h-5 text-orange-400" />}
               value={filteredData.kpis.compliance}
               className="bg-gradient-to-br from-orange-500/5 to-amber-500/5 hover:from-orange-500/10 hover:to-amber-500/10 backdrop-blur-xl border-orange-500/10"
             />
             <KPICard
               title="Kg/Tal"
+              icon={<Truck className="w-5 h-5 text-rose-400" />}
               value={filteredData.kpis.kgTal}
               className="bg-gradient-to-br from-rose-500/5 to-red-500/5 hover:from-rose-500/10 hover:to-red-500/10 backdrop-blur-xl border-rose-500/10"
             />
             <KPICard
               title="F. Avance"
+              icon={<Drill className="w-5 h-5 text-violet-400" />}
               value={filteredData.kpis.fAdvance}
               className="bg-gradient-to-br from-violet-500/5 to-purple-500/5 hover:from-violet-500/10 hover:to-purple-500/10 backdrop-blur-xl border-violet-500/10"
             />
@@ -313,11 +333,16 @@ const Index = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-6">
-            <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl">
+            <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl group">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">Progreso Operaciones</h3>
-                  <ArrowUpRight className="w-5 h-5 text-slate-400" />
+                  <div className="flex items-center gap-2">
+                    <Pickaxe className="w-5 h-5 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                    <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
+                      Progreso Operaciones
+                    </h3>
+                  </div>
+                  <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-slate-300 transition-colors" />
                 </div>
                 <OperationsChart
                   data={filteredData.chartData}
@@ -326,11 +351,16 @@ const Index = () => {
                 />
               </div>
             </div>
-            <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl">
+            <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl group">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-amber-400">Distribución por Turnos</h3>
-                  <ArrowUpRight className="w-5 h-5 text-slate-400" />
+                  <div className="flex items-center gap-2">
+                    <Factory className="w-5 h-5 text-orange-400 group-hover:text-orange-300 transition-colors" />
+                    <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-amber-400">
+                      Distribución por Turnos
+                    </h3>
+                  </div>
+                  <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-slate-300 transition-colors" />
                 </div>
                 <OperationsChart
                   data={filteredData.chartData}
@@ -342,11 +372,16 @@ const Index = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl">
+            <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl group">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-400">Actual Aceros</h3>
-                  <ArrowUpRight className="w-5 h-5 text-slate-400" />
+                  <div className="flex items-center gap-2">
+                    <Hammer className="w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
+                    <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-400">
+                      Actual Aceros
+                    </h3>
+                  </div>
+                  <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-slate-300 transition-colors" />
                 </div>
                 <HorizontalBarChart
                   data={filteredData.barData}
@@ -354,11 +389,16 @@ const Index = () => {
                 />
               </div>
             </div>
-            <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl">
+            <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl group">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-purple-400">Actual de Explosivos</h3>
-                  <ArrowUpRight className="w-5 h-5 text-slate-400" />
+                  <div className="flex items-center gap-2">
+                    <Shovel className="w-5 h-5 text-violet-400 group-hover:text-violet-300 transition-colors" />
+                    <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-purple-400">
+                      Actual de Explosivos
+                    </h3>
+                  </div>
+                  <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-slate-300 transition-colors" />
                 </div>
                 <HorizontalBarChart
                   data={filteredData.explosivesData}
