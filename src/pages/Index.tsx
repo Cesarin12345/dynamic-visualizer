@@ -183,9 +183,11 @@ const dummyData = {
   }
 };
 
+type ShiftView = "day" | "night" | "both";
+
 const Index = () => {
   const [timeView, setTimeView] = useState<"month" | "week">("month");
-  const [shiftView, setShiftView] = useState<"day" | "night" | "both">("both");
+  const [shiftView, setShiftView] = useState<ShiftView>("both");
   const [date, setDate] = useState<DateRange | undefined>({
     from: addDays(new Date(), -30),
     to: new Date(),
@@ -199,9 +201,9 @@ const Index = () => {
     return (execValue / progValue) * 100;
   };
 
-  const getShiftData = (periodData: any, shift: "day" | "night" | "both") => {
+  const getShiftData = (periodData: any, shift: ShiftView) => {
     if (shift === "both") {
-      return {
+      const combinedData = {
         kpis: {
           totalProgrammed: (parseFloat(periodData.day.kpis.totalProgrammed.replace('K', '')) + 
                           parseFloat(periodData.night.kpis.totalProgrammed.replace('K', ''))).toFixed(1) + 'K',
@@ -220,9 +222,10 @@ const Index = () => {
           ...item,
           value2: periodData.night.chartData[index].value2
         })),
-        barData: shift === "day" ? periodData.day.barData : periodData.night.barData,
-        explosivesData: shift === "day" ? periodData.day.explosivesData : periodData.night.explosivesData,
+        barData: periodData.day.barData,
+        explosivesData: periodData.day.explosivesData,
       };
+      return combinedData;
     }
     return periodData[shift];
   };
