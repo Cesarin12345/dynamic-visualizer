@@ -1,6 +1,7 @@
 
 import { BarChart, Users, DollarSign, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
 
 const menuItems = [
   { icon: BarChart, label: "Operaciones", path: "/" },
@@ -10,14 +11,19 @@ const menuItems = [
 ];
 
 const MobileMenu = () => {
+  const location = useLocation();
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-sm border-t border-slate-800 md:hidden">
+    <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-sm border-t border-slate-800 md:hidden z-50">
       <div className="flex justify-around items-center p-3">
         {menuItems.map((item) => (
           <a
             key={item.label}
             href={item.path}
-            className="flex flex-col items-center text-slate-400 hover:text-slate-100 transition-colors"
+            className={cn(
+              "flex flex-col items-center text-slate-400 hover:text-slate-100 transition-colors",
+              location.pathname === item.path && "text-slate-100"
+            )}
           >
             <item.icon className="w-6 h-6" />
             <span className="text-xs mt-1">{item.label}</span>
@@ -29,3 +35,4 @@ const MobileMenu = () => {
 };
 
 export default MobileMenu;
+
