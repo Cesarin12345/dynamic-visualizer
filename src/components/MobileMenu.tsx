@@ -14,15 +14,15 @@ const MobileMenu = () => {
   const location = useLocation();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 glass-dark border-t border-slate-800 md:hidden z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-sm border-t border-slate-800 md:hidden z-50">
       <div className="flex justify-around items-center p-3">
         {menuItems.map((item) => (
           <a
             key={item.label}
             href={item.path}
             className={cn(
-              "flex flex-col items-center text-slate-400 hover:text-slate-100 transition-all duration-300",
-              location.pathname === item.path && "text-slate-100 scale-110"
+              "flex flex-col items-center text-slate-400 hover:text-slate-100 transition-colors",
+              location.pathname === item.path && "text-slate-100"
             )}
           >
             <item.icon className="w-6 h-6" />
