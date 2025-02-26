@@ -1,7 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, BarChart3, Users, Package, Timer } from "lucide-react";
 
 interface KPICardProps {
   title: string;
@@ -21,6 +21,7 @@ const KPICard = ({ title, value, className, large = false, icon }: KPICardProps)
         "backdrop-blur-xl border-slate-700/30",
         "shadow-xl shadow-slate-900/10",
         large ? "col-span-full" : "col-span-1",
+        "xs:col-span-6 sm:col-span-6 md:col-span-3 lg:col-span-3 xl:col-span-3", // Replicando el sistema de columnas de la imagen
         className
       )}
     >
@@ -56,6 +57,50 @@ const KPICard = ({ title, value, className, large = false, icon }: KPICardProps)
       {/* Bottom gradient line */}
       <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-slate-500/10 to-transparent" />
     </Card>
+  );
+};
+
+// Ejemplo de uso siguiendo la estructura de la imagen:
+export const KPICardsContainer = () => {
+  const kpiData = [
+    {
+      title: "Efi. Vol.",
+      value: "85.5%",
+      icon: <BarChart3 className="w-4 h-4 text-slate-400" />,
+      large: true
+    },
+    {
+      title: "Cumplimiento",
+      value: "92.3%",
+      icon: <Users className="w-4 h-4 text-slate-400" />,
+      large: true
+    },
+    {
+      title: "Kg/Tal",
+      value: "45.7",
+      icon: <Package className="w-4 h-4 text-slate-400" />,
+      large: true
+    },
+    {
+      title: "F. Avance",
+      value: "78.9%",
+      icon: <Timer className="w-4 h-4 text-slate-400" />,
+      large: true
+    }
+  ];
+
+  return (
+    <div className="grid grid-cols-12 gap-4">
+      {kpiData.map((kpi, index) => (
+        <KPICard
+          key={index}
+          title={kpi.title}
+          value={kpi.value}
+          icon={kpi.icon}
+          large={kpi.large}
+        />
+      ))}
+    </div>
   );
 };
 
