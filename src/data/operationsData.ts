@@ -1,4 +1,6 @@
 
+import { DateRange } from "react-day-picker";
+
 export interface OperationDataItem {
   semana: string;
   mes: string;
