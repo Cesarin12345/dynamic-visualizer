@@ -16,13 +16,14 @@ interface HorizontalBarChartProps {
 
 const HorizontalBarChart = ({ data, title }: HorizontalBarChartProps) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const [chartMargin, setChartMargin] = useState({ top: 5, right: 30, left: 100, bottom: 20 });
+  const [chartWidth, setChartWidth] = useState<number | string>("100%");
+  const [chartMargin, setChartMargin] = useState({ top: 5, right: 30, left: 100, bottom: 5 });
   
   useEffect(() => {
     if (isMobile) {
-      setChartMargin({ top: 5, right: 5, left: 80, bottom: 20 });
+      setChartMargin({ top: 5, right: 5, left: 80, bottom: 5 });
     } else {
-      setChartMargin({ top: 5, right: 30, left: 100, bottom: 20 });
+      setChartMargin({ top: 5, right: 30, left: 100, bottom: 5 });
     }
   }, [isMobile]);
   
@@ -64,7 +65,7 @@ const HorizontalBarChart = ({ data, title }: HorizontalBarChartProps) => {
   };
 
   return (
-    <div className="h-[360px] w-full">
+    <div className="h-[400px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
