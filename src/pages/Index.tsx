@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { 
   ArrowUpRight, 
@@ -28,7 +29,7 @@ const dummyData = {
         efficiencyVol: "94.2%",
         executed: "42.3K",
         compliance: "93.8%",
-        kgTal: "148.2",
+        kgTal: "0.8",
         fAdvance: "95.1%",
       },
       chartData: [
@@ -71,7 +72,7 @@ const dummyData = {
         efficiencyVol: "91.6%",
         executed: "35.9K",
         compliance: "89.5%",
-        kgTal: "144.2",
+        kgTal: "0.7",
         fAdvance: "93.2%",
       },
       chartData: [
@@ -116,7 +117,7 @@ const dummyData = {
         efficiencyVol: "95.2%",
         executed: "11.5K",
         compliance: "94.1%",
-        kgTal: "146.8",
+        kgTal: "0.9",
         fAdvance: "96.7%",
       },
       chartData: [
@@ -151,7 +152,7 @@ const dummyData = {
         efficiencyVol: "93.2%",
         executed: "9.0K",
         compliance: "92.1%",
-        kgTal: "138.0",
+        kgTal: "0.6",
         fAdvance: "94.0%",
       },
       chartData: [
@@ -256,7 +257,7 @@ const Index = () => {
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 flex-1 min-w-[200px]">
                 <TimeToggle selected={timeView} onChange={setTimeView} />
-                <div className="inline-flex p-0.5 bg-slate-800/30 backdrop-blur-xl rounded-lg flex-1">
+                <div className="inline-flex p-0.5 bg-slate-800/30 backdrop-blur-xl rounded-lg flex-1 ml-3">
                   <Button
                     variant="ghost"
                     className={`flex-1 px-4 py-1.5 transition-all duration-300 text-sm font-medium rounded-md ${

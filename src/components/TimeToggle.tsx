@@ -1,11 +1,11 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Calendar, Sun, Moon } from "lucide-react";
+import { Calendar } from "lucide-react";
 
 interface TimeToggleProps {
-  selected: "month" | "week" | "day" | "night";
-  onChange: (value: "month" | "week" | "day" | "night") => void;
+  selected: "month" | "week";
+  onChange: (value: "month" | "week") => void;
 }
 
 const TimeToggle = ({ selected, onChange }: TimeToggleProps) => {
@@ -36,32 +36,6 @@ const TimeToggle = ({ selected, onChange }: TimeToggleProps) => {
       >
         <Calendar className="w-4 h-4" />
         Sem
-      </Button>
-      <Button
-        variant="ghost"
-        className={cn(
-          "px-4 py-2 transition-all duration-300 gap-2",
-          selected === "day"
-            ? "bg-[#F97316]/20 text-[#F97316] hover:text-[#F97316] hover:bg-[#F97316]/30"
-            : "text-slate-400 hover:text-slate-100"
-        )}
-        onClick={() => onChange("day")}
-      >
-        <Sun className="w-4 h-4" />
-        Día
-      </Button>
-      <Button
-        variant="ghost"
-        className={cn(
-          "px-4 py-2 transition-all duration-300 gap-2",
-          selected === "night"
-            ? "bg-[#1A1F2C]/50 text-slate-300 hover:text-slate-200 hover:bg-[#1A1F2C]/60"
-            : "text-slate-400 hover:text-slate-100"
-        )}
-        onClick={() => onChange("night")}
-      >
-        <Moon className="w-4 h-4" />
-        Noche
       </Button>
     </div>
   );
