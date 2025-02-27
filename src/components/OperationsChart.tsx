@@ -56,6 +56,18 @@ const CustomTooltip = ({ active, payload, label, type }: any) => {
 };
 
 const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartProps) => {
+  // Si no hay datos, mostrar un mensaje
+  if (!data || data.length === 0) {
+    return (
+      <Card className="bg-transparent border-none">
+        {title && <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>}
+        <div className="h-[400px] w-full min-w-[300px] flex items-center justify-center">
+          <p className="text-slate-400">No hay datos disponibles para el período seleccionado</p>
+        </div>
+      </Card>
+    );
+  }
+
   const renderBars = () => {
     if (shift === "both") {
       return (
@@ -93,6 +105,35 @@ const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartP
     }
   };
 
+  // Para el gráfico de barras, calculamos los valores máximos para el dominio
+  const calculateYDomain = () => {
+    if (!data || data.length === 0) return [0, 10];
+    
+    if (type === "bar") {
+      // En gráficos de barras, obtenemos el máximo + 20% para dar espacio
+      const maxValue = Math.max(
+        ...data.map(item => 
+          Math.max(
+            item.value1 || 0, 
+            item.value2 || 0
+          )
+        )
+      );
+      return [0, Math.ceil(maxValue * 1.2)];
+    } else {
+      // En gráficos de línea, obtenemos el máximo + 10% para dar espacio
+      const maxValue = Math.max(
+        ...data.map(item => 
+          Math.max(
+            item.value1 || 0, 
+            item.value2 || 0
+          )
+        )
+      );
+      return [0, Math.ceil(maxValue * 1.1)];
+    }
+  };
+
   return (
     <Card className="bg-transparent border-none">
       {title && <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>}
@@ -111,6 +152,7 @@ const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartP
                 stroke="#94a3b8"
                 tick={{ fill: "#94a3b8" }}
                 tickLine={{ stroke: "#94a3b8" }}
+                domain={calculateYDomain()}
               />
               <Tooltip 
                 content={<CustomTooltip type="line" />}
@@ -146,8 +188,7 @@ const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartP
                 stroke="#94a3b8"
                 tick={{ fill: "#94a3b8" }}
                 tickLine={{ stroke: "#94a3b8" }}
-                domain={[0, 10]}
-                tickCount={11}
+                domain={calculateYDomain()}
               />
               <Tooltip 
                 content={<CustomTooltip type="bar" />}
