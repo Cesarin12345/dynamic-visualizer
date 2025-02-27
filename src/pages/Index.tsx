@@ -22,7 +22,6 @@ import { DatePickerWithRange } from "@/components/DatePickerWithRange";
 import { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { operationsData, procesarDatosParaGrafico, obtenerKPIs } from "@/data/operationsData";
-import { useToast } from "@/hooks/use-toast";
 
 // Datos detallados para aceros por turno
 const acerosPorTurno = {
@@ -41,6 +40,14 @@ const acerosPorTurno = {
     { name: "Barra Conica 5'", value: 94 },
     { name: "Barra Conica 4'", value: 125 },
     { name: "Barra Conica 3'", value: 65 },
+  ],
+  both: [
+    { name: "Brocas de 38mm", value: 400 },
+    { name: "Barra Conica 8'", value: 226 },
+    { name: "Barra Conica 6'", value: 342 },
+    { name: "Barra Conica 5'", value: 180 },
+    { name: "Barra Conica 4'", value: 256 },
+    { name: "Barra Conica 3'", value: 138 },
   ]
 };
 
@@ -67,13 +74,67 @@ const explosivosPorTurno = {
     { name: "Cordon Detonante", value: 1920 },
     { name: "Carmex 2 x 8", value: 2800 },
     { name: "Carmex 1 x 8", value: 4500 },
+  ],
+  both: [
+    { name: "Mecha Rapida", value: 5700 },
+    { name: "Fanel Largo 4.8M", value: 4950 },
+    { name: "E5000 1 X 12", value: 26349 },
+    { name: "E3000 1 1/4 X 12", value: 4080 },
+    { name: "E3000 1 X 12", value: 38136 },
+    { name: "E1000 1 1/4 X 12", value: 6030 },
+    { name: "Cordon Detonante", value: 4190 },
+    { name: "Carmex 2 x 8", value: 5862 },
+    { name: "Carmex 1 x 8", value: 9779 },
+  ]
+};
+
+// Datos de gráficos por semana
+const porSemana = {
+  day: [
+    { name: "S1", value1: 65, value2: 50 },
+    { name: "S2", value1: 59, value2: 55 },
+    { name: "S3", value1: 80, value2: 74 },
+    { name: "S4", value1: 81, value2: 92 },
+  ],
+  night: [
+    { name: "S1", value1: 62, value2: 48 },
+    { name: "S2", value1: 55, value2: 53 },
+    { name: "S3", value1: 78, value2: 70 },
+    { name: "S4", value1: 79, value2: 88 },
+  ],
+  both: [
+    { name: "S1", value1: 127, value2: 98 },
+    { name: "S2", value1: 114, value2: 108 },
+    { name: "S3", value1: 158, value2: 144 },
+    { name: "S4", value1: 160, value2: 180 },
+  ]
+};
+
+// Datos de gráficos por mes
+const porMes = {
+  day: [
+    { name: "Ene", value1: 285, value2: 271 },
+    { name: "Feb", value1: 245, value2: 235 },
+    { name: "Mar", value1: 325, value2: 310 },
+    { name: "Abr", value1: 290, value2: 285 },
+  ],
+  night: [
+    { name: "Ene", value1: 274, value2: 259 },
+    { name: "Feb", value1: 230, value2: 220 },
+    { name: "Mar", value1: 318, value2: 300 },
+    { name: "Abr", value1: 280, value2: 275 },
+  ],
+  both: [
+    { name: "Ene", value1: 559, value2: 530 },
+    { name: "Feb", value1: 475, value2: 455 },
+    { name: "Mar", value1: 643, value2: 610 },
+    { name: "Abr", value1: 570, value2: 560 },
   ]
 };
 
 type ShiftView = "day" | "night" | "both";
 
 const Index = () => {
-  const { toast } = useToast();
   const [timeView, setTimeView] = useState<"month" | "week">("month");
   const [shiftView, setShiftView] = useState<ShiftView>("both");
   const [date, setDate] = useState<DateRange | undefined>({
@@ -83,8 +144,8 @@ const Index = () => {
 
   const [chartData, setChartData] = useState<any[]>([]);
   const [kpis, setKpis] = useState<any>({});
-  const [barData, setBarData] = useState(acerosPorTurno.day);
-  const [explosivesData, setExplosivesData] = useState(explosivosPorTurno.day);
+  const [barData, setBarData] = useState(acerosPorTurno.both);
+  const [explosivesData, setExplosivesData] = useState(explosivosPorTurno.both);
 
   const calculateProgress = (executed: string, programmed: string) => {
     const execValue = parseFloat(executed.replace('K', ''));
@@ -94,41 +155,32 @@ const Index = () => {
 
   const handleTimeViewChange = (view: "month" | "week") => {
     setTimeView(view);
-    toast({
-      title: `Vista cambiada a ${view === "month" ? "meses" : "semanas"}`,
-      description: `Mostrando datos por ${view === "month" ? "meses" : "semanas"}`,
-    });
+    // Se eliminó el toast aquí
   };
 
   const handleShiftViewChange = (shift: ShiftView) => {
     const newShift = shiftView === shift ? "both" : shift;
     setShiftView(newShift);
-    toast({
-      title: `Vista de turno actualizada`,
-      description: newShift === "both" 
-        ? "Mostrando ambos turnos" 
-        : `Mostrando solo turno de ${newShift === "day" ? "día" : "noche"}`,
-    });
+    // Se eliminó el toast aquí
   };
 
   useEffect(() => {
-    // Procesar datos basados en los filtros actuales
-    const datosGrafico = procesarDatosParaGrafico(operationsData, timeView, shiftView, date);
-    setChartData(datosGrafico);
+    // Usar datos ficticios para los gráficos de barras y líneas
+    let dataToUse;
+    if (timeView === "week") {
+      dataToUse = porSemana[shiftView];
+    } else {
+      dataToUse = porMes[shiftView];
+    }
+    setChartData(dataToUse);
     
-    // Obtener KPIs filtrados
+    // Obtener KPIs filtrados - usando los datos reales
     const kpisCalculados = obtenerKPIs(operationsData, shiftView, date);
     setKpis(kpisCalculados);
     
     // Actualizar datos de herramientas basado en turno seleccionado
-    if (shiftView === "both") {
-      // Para "both", mostramos los datos del día por defecto
-      setBarData(acerosPorTurno.day);
-      setExplosivesData(explosivosPorTurno.day);
-    } else {
-      setBarData(acerosPorTurno[shiftView]);
-      setExplosivesData(explosivosPorTurno[shiftView]);
-    }
+    setBarData(acerosPorTurno[shiftView]);
+    setExplosivesData(explosivosPorTurno[shiftView]);
     
     console.log("Filtros actualizados:", { timeView, shiftView, date });
   }, [timeView, shiftView, date]);
@@ -150,31 +202,31 @@ const Index = () => {
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+              <div className="flex items-center gap-2 flex-1 min-w-[300px]">
                 <TimeToggle selected={timeView} onChange={handleTimeViewChange} />
-                <div className="inline-flex p-0.5 bg-slate-800/30 backdrop-blur-xl rounded-lg flex-1 ml-3">
+                <div className="inline-flex p-0.5 bg-slate-800/30 backdrop-blur-xl rounded-lg flex-1 ml-3 w-full">
                   <Button
                     variant="ghost"
-                    className={`flex-1 px-4 py-1.5 transition-all duration-300 text-sm font-medium rounded-md ${
+                    className={`flex-1 px-3 py-1.5 transition-all duration-300 text-sm font-medium rounded-md ${
                       shiftView === "day"
                         ? "bg-slate-700/50 text-white shadow-lg"
                         : "text-slate-400 hover:text-slate-100"
                     }`}
                     onClick={() => handleShiftViewChange("day")}
                   >
-                    <Sun className="w-4 h-4 mr-2" />
+                    <Sun className="w-4 h-4 mr-1" />
                     Día
                   </Button>
                   <Button
                     variant="ghost"
-                    className={`flex-1 px-4 py-1.5 transition-all duration-300 text-sm font-medium rounded-md ${
+                    className={`flex-1 px-3 py-1.5 transition-all duration-300 text-sm font-medium rounded-md ${
                       shiftView === "night"
                         ? "bg-slate-700/50 text-white shadow-lg"
                         : "text-slate-400 hover:text-slate-100"
                     }`}
                     onClick={() => handleShiftViewChange("night")}
                   >
-                    <Moon className="w-4 h-4 mr-2" />
+                    <Moon className="w-4 h-4 mr-1" />
                     Noche
                   </Button>
                 </div>
@@ -183,14 +235,9 @@ const Index = () => {
                 date={date} 
                 setDate={(newDate) => {
                   setDate(newDate);
-                  if (newDate && newDate.from) {
-                    toast({
-                      title: "Rango de fechas actualizado",
-                      description: `Desde ${newDate.from.toLocaleDateString()} hasta ${newDate.to ? newDate.to.toLocaleDateString() : 'actual'}`,
-                    });
-                  }
+                  // Se eliminó el toast aquí
                 }} 
-                className="flex-1 min-w-[200px]"
+                className="flex-1 min-w-[300px]"
                 viewMode={timeView}
               />
             </div>

@@ -64,7 +64,7 @@ const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartP
   
   useEffect(() => {
     if (isMobile) {
-      setChartMargin({ top: 10, right: 10, left: 10, bottom: 30 });
+      setChartMargin({ top: 10, right: 10, left: 10, bottom: 50 });
     } else {
       setChartMargin({ top: 10, right: 30, left: 20, bottom: 30 });
     }
@@ -75,7 +75,7 @@ const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartP
     return (
       <Card className="bg-transparent border-none">
         {title && <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>}
-        <div className="h-[400px] w-full min-w-[300px] flex items-center justify-center">
+        <div className="h-[360px] w-full min-w-[300px] flex items-center justify-center">
           <p className="text-slate-400">No hay datos disponibles para el período seleccionado</p>
         </div>
       </Card>
@@ -157,7 +157,7 @@ const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartP
   };
 
   return (
-    <div className="h-[400px] w-full min-w-[200px]">
+    <div className="h-[360px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         {type === "line" ? (
           <LineChart data={data} margin={chartMargin}>
