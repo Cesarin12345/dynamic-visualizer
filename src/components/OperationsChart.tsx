@@ -149,11 +149,11 @@ const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartP
   };
 
   // Formatear números grandes
-  const formatYAxis = (value: any): string => {
-    if (typeof value === 'number' && value >= 1000) {
+  const formatYAxis = (value: number) => {
+    if (value >= 1000) {
       return `${(value / 1000).toFixed(0)}K`;
     }
-    return value.toString();
+    return value;
   };
 
   return (
