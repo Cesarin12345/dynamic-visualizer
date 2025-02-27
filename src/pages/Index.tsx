@@ -9,7 +9,9 @@ import {
   Hammer,
   HardHat,
   Shovel,
-  Drill
+  Drill,
+  Sun,
+  Moon
 } from "lucide-react";
 import KPICard from "@/components/KPICard";
 import TimeToggle from "@/components/TimeToggle";
@@ -90,23 +92,23 @@ const dummyData = {
         { name: "Dic", value1: 230, value2: 210 },
       ],
       barData: [
-        { name: "Brocas de 38", value: 215 },
-        { name: "Barra Conica 8", value: 1 },
-        { name: "Barra Conica 6", value: 12 },
-        { name: "Barra Conica 5", value: 6 },
-        { name: "Barra Conica 4", value: 31 },
-        { name: "Barra Conica 3", value: 3 },
+        { name: "Brocas de 38", value: 185 },
+        { name: "Barra Conica 8", value: 2 },
+        { name: "Barra Conica 6", value: 10 },
+        { name: "Barra Conica 5", value: 4 },
+        { name: "Barra Conica 4", value: 25 },
+        { name: "Barra Conica 3", value: 5 },
       ],
       explosivesData: [
-        { name: "Mecha Rapida", value: 3000 },
-        { name: "Fanel Largo 4.8M", value: 60 },
-        { name: "E5000 1 X 12", value: 14349 },
-        { name: "E3000 1 1/4 X 12", value: 260 },
-        { name: "E3000 1 X 12", value: 20136 },
-        { name: "E1000 1 1/4 X 12", value: 1080 },
-        { name: "Cordon Detonante", value: 270 },
-        { name: "Carmex 2 x 8", value: 3062 },
-        { name: "Carmex 1 x 8", value: 5279 },
+        { name: "Mecha Rapida", value: 2500 },
+        { name: "Fanel Largo 4.8M", value: 50 },
+        { name: "E5000 1 X 12", value: 12000 },
+        { name: "E3000 1 1/4 X 12", value: 220 },
+        { name: "E3000 1 X 12", value: 18000 },
+        { name: "E1000 1 1/4 X 12", value: 950 },
+        { name: "Cordon Detonante", value: 220 },
+        { name: "Carmex 2 x 8", value: 2800 },
+        { name: "Carmex 1 x 8", value: 4500 },
       ],
     }
   },
@@ -162,23 +164,23 @@ const dummyData = {
         { name: "S4", value1: 140, value2: 130 },
       ],
       barData: [
-        { name: "Brocas de 38", value: 75 },
-        { name: "Barra Conica 8", value: 0 },
-        { name: "Barra Conica 6", value: 4 },
-        { name: "Barra Conica 5", value: 2 },
-        { name: "Barra Conica 4", value: 8 },
-        { name: "Barra Conica 3", value: 1 },
+        { name: "Brocas de 38", value: 65 },
+        { name: "Barra Conica 8", value: 1 },
+        { name: "Barra Conica 6", value: 3 },
+        { name: "Barra Conica 5", value: 1 },
+        { name: "Barra Conica 4", value: 6 },
+        { name: "Barra Conica 3", value: 2 },
       ],
       explosivesData: [
-        { name: "Mecha Rapida", value: 800 },
-        { name: "Fanel Largo 4.8M", value: 15 },
-        { name: "E5000 1 X 12", value: 3500 },
-        { name: "E3000 1 1/4 X 12", value: 80 },
-        { name: "E3000 1 X 12", value: 5200 },
-        { name: "E1000 1 1/4 X 12", value: 250 },
-        { name: "Cordon Detonante", value: 70 },
-        { name: "Carmex 2 x 8", value: 800 },
-        { name: "Carmex 1 x 8", value: 1200 },
+        { name: "Mecha Rapida", value: 700 },
+        { name: "Fanel Largo 4.8M", value: 12 },
+        { name: "E5000 1 X 12", value: 3000 },
+        { name: "E3000 1 1/4 X 12", value: 70 },
+        { name: "E3000 1 X 12", value: 4800 },
+        { name: "E1000 1 1/4 X 12", value: 220 },
+        { name: "Cordon Detonante", value: 60 },
+        { name: "Carmex 2 x 8", value: 750 },
+        { name: "Carmex 1 x 8", value: 1100 },
       ],
     }
   }
@@ -195,6 +197,8 @@ const Index = () => {
   });
 
   const [filteredData, setFilteredData] = useState(dummyData.month.day);
+  const [barData, setBarData] = useState(dummyData.month.day.barData);
+  const [explosivesData, setExplosivesData] = useState(dummyData.month.day.explosivesData);
 
   const calculateProgress = (executed: string, programmed: string) => {
     const execValue = parseFloat(executed.replace('K', ''));
@@ -235,6 +239,18 @@ const Index = () => {
     const periodData = timeView === "month" ? dummyData.month : dummyData.week;
     const newData = getShiftData(periodData, shiftView);
     setFilteredData(newData);
+    
+    // Actualizar los datos específicos para aceros y explosivos según el turno
+    if (shiftView === "both") {
+      // Para "both", mantenemos los datos del turno de día por defecto
+      setBarData(periodData.day.barData);
+      setExplosivesData(periodData.day.explosivesData);
+    } else {
+      // Para día o noche específicos, usamos los datos correspondientes
+      setBarData(periodData[shiftView].barData);
+      setExplosivesData(periodData[shiftView].explosivesData);
+    }
+    
     console.log("Filtros actualizados:", { timeView, shiftView, date });
   }, [timeView, shiftView, date]);
 
@@ -267,6 +283,7 @@ const Index = () => {
                     }`}
                     onClick={() => setShiftView(shiftView === "day" ? "both" : "day")}
                   >
+                    <Sun className="w-4 h-4 mr-2" />
                     Día
                   </Button>
                   <Button
@@ -278,6 +295,7 @@ const Index = () => {
                     }`}
                     onClick={() => setShiftView(shiftView === "night" ? "both" : "night")}
                   >
+                    <Moon className="w-4 h-4 mr-2" />
                     Noche
                   </Button>
                 </div>
@@ -399,13 +417,13 @@ const Index = () => {
                   <div className="flex items-center gap-2">
                     <Hammer className="w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
                     <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-400">
-                      Actual Aceros
+                      Actual Aceros {shiftView === "day" ? "(Día)" : shiftView === "night" ? "(Noche)" : ""}
                     </h3>
                   </div>
                   <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-slate-300 transition-colors" />
                 </div>
                 <HorizontalBarChart
-                  data={filteredData.barData}
+                  data={barData}
                   title=""
                 />
               </div>
@@ -416,13 +434,13 @@ const Index = () => {
                   <div className="flex items-center gap-2">
                     <Shovel className="w-5 h-5 text-violet-400 group-hover:text-violet-300 transition-colors" />
                     <h3 className="text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-purple-400">
-                      Actual de Explosivos
+                      Actual de Explosivos {shiftView === "day" ? "(Día)" : shiftView === "night" ? "(Noche)" : ""}
                     </h3>
                   </div>
                   <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-slate-300 transition-colors" />
                 </div>
                 <HorizontalBarChart
-                  data={filteredData.explosivesData}
+                  data={explosivesData}
                   title=""
                 />
               </div>
