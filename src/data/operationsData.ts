@@ -117,13 +117,14 @@ export const operationsData: OperationDataItem[] = [
 ];
 
 // Helper functions para procesar datos 
-export const procesarDatosParaGrafico = (datos: OperationDataItem[], tipo: "month" | "week", turno: "day" | "night" | "both", periodo?: { from: Date, to: Date }) => {
+export const procesarDatosParaGrafico = (datos: OperationDataItem[], tipo: "month" | "week", turno: "day" | "night" | "both", periodo?: DateRange) => {
   // Filtrar por período si está especificado
   let datosFiltrados = datos;
-  if (periodo && periodo.from && periodo.to) {
+  if (periodo && periodo.from) {
     datosFiltrados = datos.filter(item => {
       const fecha = new Date(item.fechaInicio);
-      return fecha >= periodo.from && fecha <= periodo.to;
+      // Verificar if periodo.to existe, si no, solo compara con from
+      return fecha >= periodo.from && (periodo.to ? fecha <= periodo.to : true);
     });
   }
 
@@ -215,14 +216,27 @@ export const procesarDatosParaGrafico = (datos: OperationDataItem[], tipo: "mont
 };
 
 // Obtener KPIs
-export const obtenerKPIs = (datos: OperationDataItem[], turno: "day" | "night" | "both", periodo?: { from: Date, to: Date }) => {
+export const obtenerKPIs = (datos: OperationDataItem[], turno: "day" | "night" | "both", periodo?: DateRange) => {
   // Filtrar por período si está especificado
   let datosFiltrados = datos;
-  if (periodo && periodo.from && periodo.to) {
+  if (periodo && periodo.from) {
     datosFiltrados = datos.filter(item => {
       const fecha = new Date(item.fechaInicio);
-      return fecha >= periodo.from && fecha <= periodo.to;
+      // Verificar if periodo.to existe, si no, solo compara con from
+      return fecha >= periodo.from && (periodo.to ? fecha <= periodo.to : true);
     });
+  }
+
+  // Verificar que hay datos después del filtro
+  if (datosFiltrados.length === 0) {
+    return {
+      totalProgrammed: "0K",
+      efficiencyVol: "0%",
+      executed: "0K",
+      compliance: "0%",
+      kgTal: "0",
+      fAdvance: "0%",
+    };
   }
 
   // Mapear turnos a guardia
