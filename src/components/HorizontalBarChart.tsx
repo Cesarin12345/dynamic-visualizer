@@ -1,6 +1,8 @@
 
 import { Card } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { useEffect, useState } from "react";
+import { useMediaQuery } from "@/hooks/use-mobile";
 
 interface DataItem {
   name: string;
@@ -13,42 +15,92 @@ interface HorizontalBarChartProps {
 }
 
 const HorizontalBarChart = ({ data, title }: HorizontalBarChartProps) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [chartWidth, setChartWidth] = useState<number | string>("100%");
+  const [chartMargin, setChartMargin] = useState({ top: 5, right: 30, left: 100, bottom: 5 });
+  
+  useEffect(() => {
+    if (isMobile) {
+      setChartMargin({ top: 5, right: 5, left: 80, bottom: 5 });
+    } else {
+      setChartMargin({ top: 5, right: 30, left: 100, bottom: 5 });
+    }
+  }, [isMobile]);
+  
+  // Generamos colores para las barras
+  const getBarColor = (index: number) => {
+    const colors = [
+      "#f97316", // orange-500
+      "#f59e0b", // amber-500
+      "#d97706", // yellow-600
+      "#ea580c", // orange-600
+      "#f97316", // orange-500
+      "#f59e0b", // amber-500
+      "#d97706", // yellow-600
+      "#ea580c", // orange-600
+      "#f97316", // orange-500
+    ];
+    return colors[index % colors.length];
+  };
+
+  // Formatear números grandes para mejorar la visualización
+  const formatXAxis = (value: number) => {
+    if (value >= 1000) {
+      return `${(value / 1000).toFixed(1)}K`;
+    }
+    return value;
+  };
+
+  // Customizar tooltip para mejor UX
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-slate-800 p-3 rounded-lg border border-slate-700 shadow-lg">
+          <p className="text-slate-200 font-medium">{label}</p>
+          <p className="text-orange-400">{`Cantidad: ${payload[0].value.toLocaleString()}`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
-    <Card className="p-6 bg-background/30 backdrop-blur-sm border-slate-800/50">
-      <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>
-      <div className="h-[400px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={data}
-            layout="vertical"
-            margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
+    <div className="h-[400px] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          data={data}
+          layout="vertical"
+          margin={chartMargin}
+        >
+          <XAxis 
+            type="number" 
+            stroke="#94a3b8" 
+            tickFormatter={formatXAxis}
+            domain={[0, 'dataMax']}
+          />
+          <YAxis
+            dataKey="name"
+            type="category"
+            stroke="#94a3b8"
+            tick={{ fill: "#94a3b8", fontSize: isMobile ? 10 : 12 }}
+            width={chartMargin.left}
+          />
+          <Tooltip
+            content={<CustomTooltip />}
+            wrapperStyle={{ outline: 'none' }}
+          />
+          <Bar
+            dataKey="value"
+            radius={[0, 4, 4, 0]}
+            barSize={isMobile ? 15 : 20}
           >
-            <XAxis type="number" stroke="#94a3b8" />
-            <YAxis
-              dataKey="name"
-              type="category"
-              stroke="#94a3b8"
-              tick={{ fill: "#94a3b8" }}
-            />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "#1e293b",
-                border: "none",
-                borderRadius: "0.5rem",
-              }}
-              itemStyle={{ color: "#f1f5f9" }}
-              labelStyle={{ color: "#94a3b8" }}
-            />
-            <Bar
-              dataKey="value"
-              fill="#f97316"
-              radius={[0, 4, 4, 0]}
-              barSize={20}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </Card>
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={getBarColor(index)} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

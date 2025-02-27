@@ -20,50 +20,51 @@ import HorizontalBarChart from "@/components/HorizontalBarChart";
 import MobileMenu from "@/components/MobileMenu";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
 import { DateRange } from "react-day-picker";
-import { addDays } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { operationsData, procesarDatosParaGrafico, obtenerKPIs } from "@/data/operationsData";
+import { useToast } from "@/hooks/use-toast";
 
-// Simulación de datos para herramientas
+// Datos detallados para aceros por turno
 const acerosPorTurno = {
   day: [
-    { name: "Brocas de 38", value: 215 },
-    { name: "Barra Conica 8", value: 1 },
-    { name: "Barra Conica 6", value: 12 },
-    { name: "Barra Conica 5", value: 6 },
-    { name: "Barra Conica 4", value: 31 },
-    { name: "Barra Conica 3", value: 3 },
+    { name: "Brocas de 38mm", value: 215 },
+    { name: "Barra Conica 8'", value: 124 },
+    { name: "Barra Conica 6'", value: 192 },
+    { name: "Barra Conica 5'", value: 86 },
+    { name: "Barra Conica 4'", value: 131 },
+    { name: "Barra Conica 3'", value: 73 },
   ],
   night: [
-    { name: "Brocas de 38", value: 185 },
-    { name: "Barra Conica 8", value: 2 },
-    { name: "Barra Conica 6", value: 10 },
-    { name: "Barra Conica 5", value: 4 },
-    { name: "Barra Conica 4", value: 25 },
-    { name: "Barra Conica 3", value: 5 },
+    { name: "Brocas de 38mm", value: 185 },
+    { name: "Barra Conica 8'", value: 102 },
+    { name: "Barra Conica 6'", value: 150 },
+    { name: "Barra Conica 5'", value: 94 },
+    { name: "Barra Conica 4'", value: 125 },
+    { name: "Barra Conica 3'", value: 65 },
   ]
 };
 
+// Datos detallados para explosivos por turno, basados en la imagen
 const explosivosPorTurno = {
   day: [
-    { name: "Mecha Rapida", value: 3000 },
-    { name: "Fanel Largo 4.8M", value: 60 },
+    { name: "Mecha Rapida", value: 3200 },
+    { name: "Fanel Largo 4.8M", value: 2800 },
     { name: "E5000 1 X 12", value: 14349 },
-    { name: "E3000 1 1/4 X 12", value: 260 },
+    { name: "E3000 1 1/4 X 12", value: 2260 },
     { name: "E3000 1 X 12", value: 20136 },
-    { name: "E1000 1 1/4 X 12", value: 1080 },
-    { name: "Cordon Detonante", value: 270 },
+    { name: "E1000 1 1/4 X 12", value: 3080 },
+    { name: "Cordon Detonante", value: 2270 },
     { name: "Carmex 2 x 8", value: 3062 },
     { name: "Carmex 1 x 8", value: 5279 },
   ],
   night: [
     { name: "Mecha Rapida", value: 2500 },
-    { name: "Fanel Largo 4.8M", value: 50 },
+    { name: "Fanel Largo 4.8M", value: 2150 },
     { name: "E5000 1 X 12", value: 12000 },
-    { name: "E3000 1 1/4 X 12", value: 220 },
+    { name: "E3000 1 1/4 X 12", value: 1820 },
     { name: "E3000 1 X 12", value: 18000 },
-    { name: "E1000 1 1/4 X 12", value: 950 },
-    { name: "Cordon Detonante", value: 220 },
+    { name: "E1000 1 1/4 X 12", value: 2950 },
+    { name: "Cordon Detonante", value: 1920 },
     { name: "Carmex 2 x 8", value: 2800 },
     { name: "Carmex 1 x 8", value: 4500 },
   ]
@@ -72,6 +73,7 @@ const explosivosPorTurno = {
 type ShiftView = "day" | "night" | "both";
 
 const Index = () => {
+  const { toast } = useToast();
   const [timeView, setTimeView] = useState<"month" | "week">("month");
   const [shiftView, setShiftView] = useState<ShiftView>("both");
   const [date, setDate] = useState<DateRange | undefined>({
@@ -90,6 +92,25 @@ const Index = () => {
     return (execValue / progValue) * 100;
   };
 
+  const handleTimeViewChange = (view: "month" | "week") => {
+    setTimeView(view);
+    toast({
+      title: `Vista cambiada a ${view === "month" ? "meses" : "semanas"}`,
+      description: `Mostrando datos por ${view === "month" ? "meses" : "semanas"}`,
+    });
+  };
+
+  const handleShiftViewChange = (shift: ShiftView) => {
+    const newShift = shiftView === shift ? "both" : shift;
+    setShiftView(newShift);
+    toast({
+      title: `Vista de turno actualizada`,
+      description: newShift === "both" 
+        ? "Mostrando ambos turnos" 
+        : `Mostrando solo turno de ${newShift === "day" ? "día" : "noche"}`,
+    });
+  };
+
   useEffect(() => {
     // Procesar datos basados en los filtros actuales
     const datosGrafico = procesarDatosParaGrafico(operationsData, timeView, shiftView, date);
@@ -101,6 +122,7 @@ const Index = () => {
     
     // Actualizar datos de herramientas basado en turno seleccionado
     if (shiftView === "both") {
+      // Para "both", mostramos los datos del día por defecto
       setBarData(acerosPorTurno.day);
       setExplosivesData(explosivosPorTurno.day);
     } else {
@@ -129,7 +151,7 @@ const Index = () => {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 flex-1 min-w-[200px]">
-                <TimeToggle selected={timeView} onChange={setTimeView} />
+                <TimeToggle selected={timeView} onChange={handleTimeViewChange} />
                 <div className="inline-flex p-0.5 bg-slate-800/30 backdrop-blur-xl rounded-lg flex-1 ml-3">
                   <Button
                     variant="ghost"
@@ -138,7 +160,7 @@ const Index = () => {
                         ? "bg-slate-700/50 text-white shadow-lg"
                         : "text-slate-400 hover:text-slate-100"
                     }`}
-                    onClick={() => setShiftView(shiftView === "day" ? "both" : "day")}
+                    onClick={() => handleShiftViewChange("day")}
                   >
                     <Sun className="w-4 h-4 mr-2" />
                     Día
@@ -150,7 +172,7 @@ const Index = () => {
                         ? "bg-slate-700/50 text-white shadow-lg"
                         : "text-slate-400 hover:text-slate-100"
                     }`}
-                    onClick={() => setShiftView(shiftView === "night" ? "both" : "night")}
+                    onClick={() => handleShiftViewChange("night")}
                   >
                     <Moon className="w-4 h-4 mr-2" />
                     Noche
@@ -159,7 +181,15 @@ const Index = () => {
               </div>
               <DatePickerWithRange 
                 date={date} 
-                setDate={setDate} 
+                setDate={(newDate) => {
+                  setDate(newDate);
+                  if (newDate && newDate.from) {
+                    toast({
+                      title: "Rango de fechas actualizado",
+                      description: `Desde ${newDate.from.toLocaleDateString()} hasta ${newDate.to ? newDate.to.toLocaleDateString() : 'actual'}`,
+                    });
+                  }
+                }} 
                 className="flex-1 min-w-[200px]"
                 viewMode={timeView}
               />
@@ -228,7 +258,7 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-6">
             <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl group">
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <Pickaxe className="w-5 h-5 text-purple-400 group-hover:text-purple-300 transition-colors" />
@@ -247,7 +277,7 @@ const Index = () => {
               </div>
             </div>
             <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl group">
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <Factory className="w-5 h-5 text-orange-400 group-hover:text-orange-300 transition-colors" />
@@ -269,7 +299,7 @@ const Index = () => {
 
           <div className="space-y-6">
             <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl group">
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <Hammer className="w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
@@ -286,7 +316,7 @@ const Index = () => {
               </div>
             </div>
             <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl group">
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <Shovel className="w-5 h-5 text-violet-400 group-hover:text-violet-300 transition-colors" />
