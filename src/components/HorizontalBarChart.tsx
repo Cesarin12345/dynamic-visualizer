@@ -44,11 +44,11 @@ const HorizontalBarChart = ({ data, title }: HorizontalBarChartProps) => {
   };
 
   // Formatear números grandes para mejorar la visualización
-  const formatXAxis = (value: number) => {
-    if (value >= 1000) {
+  const formatXAxis = (value: any): string => {
+    if (typeof value === 'number' && value >= 1000) {
       return `${(value / 1000).toFixed(1)}K`;
     }
-    return value;
+    return value.toString();
   };
 
   // Customizar tooltip para mejor UX
