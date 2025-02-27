@@ -20,116 +20,170 @@ import HorizontalBarChart from "@/components/HorizontalBarChart";
 import MobileMenu from "@/components/MobileMenu";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
 import { DateRange } from "react-day-picker";
+import { addDays } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { operationsData, procesarDatosParaGrafico, obtenerKPIs } from "@/data/operationsData";
 
-// Datos detallados para aceros por turno
-const acerosPorTurno = {
-  day: [
-    { name: "Brocas de 38mm", value: 215 },
-    { name: "Barra Conica 8'", value: 124 },
-    { name: "Barra Conica 6'", value: 192 },
-    { name: "Barra Conica 5'", value: 86 },
-    { name: "Barra Conica 4'", value: 131 },
-    { name: "Barra Conica 3'", value: 73 },
-  ],
-  night: [
-    { name: "Brocas de 38mm", value: 185 },
-    { name: "Barra Conica 8'", value: 102 },
-    { name: "Barra Conica 6'", value: 150 },
-    { name: "Barra Conica 5'", value: 94 },
-    { name: "Barra Conica 4'", value: 125 },
-    { name: "Barra Conica 3'", value: 65 },
-  ],
-  both: [
-    { name: "Brocas de 38mm", value: 400 },
-    { name: "Barra Conica 8'", value: 226 },
-    { name: "Barra Conica 6'", value: 342 },
-    { name: "Barra Conica 5'", value: 180 },
-    { name: "Barra Conica 4'", value: 256 },
-    { name: "Barra Conica 3'", value: 138 },
-  ]
-};
-
-// Datos detallados para explosivos por turno, basados en la imagen
-const explosivosPorTurno = {
-  day: [
-    { name: "Mecha Rapida", value: 3200 },
-    { name: "Fanel Largo 4.8M", value: 2800 },
-    { name: "E5000 1 X 12", value: 14349 },
-    { name: "E3000 1 1/4 X 12", value: 2260 },
-    { name: "E3000 1 X 12", value: 20136 },
-    { name: "E1000 1 1/4 X 12", value: 3080 },
-    { name: "Cordon Detonante", value: 2270 },
-    { name: "Carmex 2 x 8", value: 3062 },
-    { name: "Carmex 1 x 8", value: 5279 },
-  ],
-  night: [
-    { name: "Mecha Rapida", value: 2500 },
-    { name: "Fanel Largo 4.8M", value: 2150 },
-    { name: "E5000 1 X 12", value: 12000 },
-    { name: "E3000 1 1/4 X 12", value: 1820 },
-    { name: "E3000 1 X 12", value: 18000 },
-    { name: "E1000 1 1/4 X 12", value: 2950 },
-    { name: "Cordon Detonante", value: 1920 },
-    { name: "Carmex 2 x 8", value: 2800 },
-    { name: "Carmex 1 x 8", value: 4500 },
-  ],
-  both: [
-    { name: "Mecha Rapida", value: 5700 },
-    { name: "Fanel Largo 4.8M", value: 4950 },
-    { name: "E5000 1 X 12", value: 26349 },
-    { name: "E3000 1 1/4 X 12", value: 4080 },
-    { name: "E3000 1 X 12", value: 38136 },
-    { name: "E1000 1 1/4 X 12", value: 6030 },
-    { name: "Cordon Detonante", value: 4190 },
-    { name: "Carmex 2 x 8", value: 5862 },
-    { name: "Carmex 1 x 8", value: 9779 },
-  ]
-};
-
-// Datos de gráficos por semana
-const porSemana = {
-  day: [
-    { name: "S1", value1: 65, value2: 50 },
-    { name: "S2", value1: 59, value2: 55 },
-    { name: "S3", value1: 80, value2: 74 },
-    { name: "S4", value1: 81, value2: 92 },
-  ],
-  night: [
-    { name: "S1", value1: 62, value2: 48 },
-    { name: "S2", value1: 55, value2: 53 },
-    { name: "S3", value1: 78, value2: 70 },
-    { name: "S4", value1: 79, value2: 88 },
-  ],
-  both: [
-    { name: "S1", value1: 127, value2: 98 },
-    { name: "S2", value1: 114, value2: 108 },
-    { name: "S3", value1: 158, value2: 144 },
-    { name: "S4", value1: 160, value2: 180 },
-  ]
-};
-
-// Datos de gráficos por mes
-const porMes = {
-  day: [
-    { name: "Ene", value1: 285, value2: 271 },
-    { name: "Feb", value1: 245, value2: 235 },
-    { name: "Mar", value1: 325, value2: 310 },
-    { name: "Abr", value1: 290, value2: 285 },
-  ],
-  night: [
-    { name: "Ene", value1: 274, value2: 259 },
-    { name: "Feb", value1: 230, value2: 220 },
-    { name: "Mar", value1: 318, value2: 300 },
-    { name: "Abr", value1: 280, value2: 275 },
-  ],
-  both: [
-    { name: "Ene", value1: 559, value2: 530 },
-    { name: "Feb", value1: 475, value2: 455 },
-    { name: "Mar", value1: 643, value2: 610 },
-    { name: "Abr", value1: 570, value2: 560 },
-  ]
+const dummyData = {
+  month: {
+    day: {
+      kpis: {
+        totalProgrammed: "45.1K",
+        efficiencyVol: "94.2%",
+        executed: "42.3K",
+        compliance: "93.8%",
+        kgTal: "0.8",
+        fAdvance: "95.1%",
+      },
+      chartData: [
+        { name: "Ene", value1: 200, value2: 150 },
+        { name: "Feb", value1: 180, value2: 170 },
+        { name: "Mar", value1: 250, value2: 220 },
+        { name: "Abr", value1: 300, value2: 280 },
+        { name: "May", value1: 280, value2: 260 },
+        { name: "Jun", value1: 320, value2: 300 },
+        { name: "Jul", value1: 290, value2: 270 },
+        { name: "Ago", value1: 310, value2: 290 },
+        { name: "Sep", value1: 340, value2: 320 },
+        { name: "Oct", value1: 290, value2: 270 },
+        { name: "Nov", value1: 270, value2: 250 },
+        { name: "Dic", value1: 250, value2: 230 },
+      ],
+      barData: [
+        { name: "Brocas de 38", value: 215 },
+        { name: "Barra Conica 8", value: 1 },
+        { name: "Barra Conica 6", value: 12 },
+        { name: "Barra Conica 5", value: 6 },
+        { name: "Barra Conica 4", value: 31 },
+        { name: "Barra Conica 3", value: 3 },
+      ],
+      explosivesData: [
+        { name: "Mecha Rapida", value: 3000 },
+        { name: "Fanel Largo 4.8M", value: 60 },
+        { name: "E5000 1 X 12", value: 14349 },
+        { name: "E3000 1 1/4 X 12", value: 260 },
+        { name: "E3000 1 X 12", value: 20136 },
+        { name: "E1000 1 1/4 X 12", value: 1080 },
+        { name: "Cordon Detonante", value: 270 },
+        { name: "Carmex 2 x 8", value: 3062 },
+        { name: "Carmex 1 x 8", value: 5279 },
+      ],
+    },
+    night: {
+      kpis: {
+        totalProgrammed: "40.2K",
+        efficiencyVol: "91.6%",
+        executed: "35.9K",
+        compliance: "89.5%",
+        kgTal: "0.7",
+        fAdvance: "93.2%",
+      },
+      chartData: [
+        { name: "Ene", value1: 180, value2: 150 },
+        { name: "Feb", value1: 160, value2: 140 },
+        { name: "Mar", value1: 250, value2: 200 },
+        { name: "Abr", value1: 280, value2: 220 },
+        { name: "May", value1: 260, value2: 240 },
+        { name: "Jun", value1: 300, value2: 270 },
+        { name: "Jul", value1: 270, value2: 250 },
+        { name: "Ago", value1: 290, value2: 270 },
+        { name: "Sep", value1: 320, value2: 300 },
+        { name: "Oct", value1: 270, value2: 250 },
+        { name: "Nov", value1: 250, value2: 230 },
+        { name: "Dic", value1: 230, value2: 210 },
+      ],
+      barData: [
+        { name: "Brocas de 38", value: 185 },
+        { name: "Barra Conica 8", value: 2 },
+        { name: "Barra Conica 6", value: 10 },
+        { name: "Barra Conica 5", value: 4 },
+        { name: "Barra Conica 4", value: 25 },
+        { name: "Barra Conica 3", value: 5 },
+      ],
+      explosivesData: [
+        { name: "Mecha Rapida", value: 2500 },
+        { name: "Fanel Largo 4.8M", value: 50 },
+        { name: "E5000 1 X 12", value: 12000 },
+        { name: "E3000 1 1/4 X 12", value: 220 },
+        { name: "E3000 1 X 12", value: 18000 },
+        { name: "E1000 1 1/4 X 12", value: 950 },
+        { name: "Cordon Detonante", value: 220 },
+        { name: "Carmex 2 x 8", value: 2800 },
+        { name: "Carmex 1 x 8", value: 4500 },
+      ],
+    }
+  },
+  week: {
+    day: {
+      kpis: {
+        totalProgrammed: "12.1K",
+        efficiencyVol: "95.2%",
+        executed: "11.5K",
+        compliance: "94.1%",
+        kgTal: "0.9",
+        fAdvance: "96.7%",
+      },
+      chartData: [
+        { name: "S1", value1: 120, value2: 110 },
+        { name: "S2", value1: 150, value2: 140 },
+        { name: "S3", value1: 180, value2: 170 },
+        { name: "S4", value1: 160, value2: 150 },
+      ],
+      barData: [
+        { name: "Brocas de 38", value: 75 },
+        { name: "Barra Conica 8", value: 0 },
+        { name: "Barra Conica 6", value: 4 },
+        { name: "Barra Conica 5", value: 2 },
+        { name: "Barra Conica 4", value: 8 },
+        { name: "Barra Conica 3", value: 1 },
+      ],
+      explosivesData: [
+        { name: "Mecha Rapida", value: 800 },
+        { name: "Fanel Largo 4.8M", value: 15 },
+        { name: "E5000 1 X 12", value: 3500 },
+        { name: "E3000 1 1/4 X 12", value: 80 },
+        { name: "E3000 1 X 12", value: 5200 },
+        { name: "E1000 1 1/4 X 12", value: 250 },
+        { name: "Cordon Detonante", value: 70 },
+        { name: "Carmex 2 x 8", value: 800 },
+        { name: "Carmex 1 x 8", value: 1200 },
+      ],
+    },
+    night: {
+      kpis: {
+        totalProgrammed: "10.0K",
+        efficiencyVol: "93.2%",
+        executed: "9.0K",
+        compliance: "92.1%",
+        kgTal: "0.6",
+        fAdvance: "94.0%",
+      },
+      chartData: [
+        { name: "S1", value1: 100, value2: 90 },
+        { name: "S2", value1: 130, value2: 120 },
+        { name: "S3", value1: 160, value2: 150 },
+        { name: "S4", value1: 140, value2: 130 },
+      ],
+      barData: [
+        { name: "Brocas de 38", value: 65 },
+        { name: "Barra Conica 8", value: 1 },
+        { name: "Barra Conica 6", value: 3 },
+        { name: "Barra Conica 5", value: 1 },
+        { name: "Barra Conica 4", value: 6 },
+        { name: "Barra Conica 3", value: 2 },
+      ],
+      explosivesData: [
+        { name: "Mecha Rapida", value: 700 },
+        { name: "Fanel Largo 4.8M", value: 12 },
+        { name: "E5000 1 X 12", value: 3000 },
+        { name: "E3000 1 1/4 X 12", value: 70 },
+        { name: "E3000 1 X 12", value: 4800 },
+        { name: "E1000 1 1/4 X 12", value: 220 },
+        { name: "Cordon Detonante", value: 60 },
+        { name: "Carmex 2 x 8", value: 750 },
+        { name: "Carmex 1 x 8", value: 1100 },
+      ],
+    }
+  }
 };
 
 type ShiftView = "day" | "night" | "both";
@@ -138,14 +192,13 @@ const Index = () => {
   const [timeView, setTimeView] = useState<"month" | "week">("month");
   const [shiftView, setShiftView] = useState<ShiftView>("both");
   const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date("2024-01-01"),
-    to: new Date("2024-12-31"),
+    from: addDays(new Date(), -30),
+    to: new Date(),
   });
 
-  const [chartData, setChartData] = useState<any[]>([]);
-  const [kpis, setKpis] = useState<any>({});
-  const [barData, setBarData] = useState(acerosPorTurno.both);
-  const [explosivesData, setExplosivesData] = useState(explosivosPorTurno.both);
+  const [filteredData, setFilteredData] = useState(dummyData.month.day);
+  const [barData, setBarData] = useState(dummyData.month.day.barData);
+  const [explosivesData, setExplosivesData] = useState(dummyData.month.day.explosivesData);
 
   const calculateProgress = (executed: string, programmed: string) => {
     const execValue = parseFloat(executed.replace('K', ''));
@@ -153,34 +206,50 @@ const Index = () => {
     return (execValue / progValue) * 100;
   };
 
-  const handleTimeViewChange = (view: "month" | "week") => {
-    setTimeView(view);
-    // Se eliminó el toast aquí
-  };
-
-  const handleShiftViewChange = (shift: ShiftView) => {
-    const newShift = shiftView === shift ? "both" : shift;
-    setShiftView(newShift);
-    // Se eliminó el toast aquí
+  const getShiftData = (periodData: any, shift: ShiftView) => {
+    if (shift === "both") {
+      const combinedData = {
+        kpis: {
+          totalProgrammed: (parseFloat(periodData.day.kpis.totalProgrammed.replace('K', '')) + 
+                          parseFloat(periodData.night.kpis.totalProgrammed.replace('K', ''))).toFixed(1) + 'K',
+          efficiencyVol: ((parseFloat(periodData.day.kpis.efficiencyVol.replace('%', '')) + 
+                          parseFloat(periodData.night.kpis.efficiencyVol.replace('%', ''))) / 2).toFixed(1) + '%',
+          executed: (parseFloat(periodData.day.kpis.executed.replace('K', '')) + 
+                    parseFloat(periodData.night.kpis.executed.replace('K', ''))).toFixed(1) + 'K',
+          compliance: ((parseFloat(periodData.day.kpis.compliance.replace('%', '')) + 
+                      parseFloat(periodData.night.kpis.compliance.replace('%', ''))) / 2).toFixed(1) + '%',
+          kgTal: ((parseFloat(periodData.day.kpis.kgTal) + 
+                  parseFloat(periodData.night.kpis.kgTal)) / 2).toFixed(1),
+          fAdvance: ((parseFloat(periodData.day.kpis.fAdvance.replace('%', '')) + 
+                    parseFloat(periodData.night.kpis.fAdvance.replace('%', ''))) / 2).toFixed(1) + '%',
+        },
+        chartData: periodData.day.chartData.map((item: any, index: number) => ({
+          ...item,
+          value2: periodData.night.chartData[index].value2
+        })),
+        barData: periodData.day.barData,
+        explosivesData: periodData.day.explosivesData,
+      };
+      return combinedData;
+    }
+    return periodData[shift];
   };
 
   useEffect(() => {
-    // Usar datos ficticios para los gráficos de barras y líneas
-    let dataToUse;
-    if (timeView === "week") {
-      dataToUse = porSemana[shiftView];
+    const periodData = timeView === "month" ? dummyData.month : dummyData.week;
+    const newData = getShiftData(periodData, shiftView);
+    setFilteredData(newData);
+    
+    // Actualizar los datos específicos para aceros y explosivos según el turno
+    if (shiftView === "both") {
+      // Para "both", mantenemos los datos del turno de día por defecto
+      setBarData(periodData.day.barData);
+      setExplosivesData(periodData.day.explosivesData);
     } else {
-      dataToUse = porMes[shiftView];
+      // Para día o noche específicos, usamos los datos correspondientes
+      setBarData(periodData[shiftView].barData);
+      setExplosivesData(periodData[shiftView].explosivesData);
     }
-    setChartData(dataToUse);
-    
-    // Obtener KPIs filtrados - usando los datos reales
-    const kpisCalculados = obtenerKPIs(operationsData, shiftView, date);
-    setKpis(kpisCalculados);
-    
-    // Actualizar datos de herramientas basado en turno seleccionado
-    setBarData(acerosPorTurno[shiftView]);
-    setExplosivesData(explosivosPorTurno[shiftView]);
     
     console.log("Filtros actualizados:", { timeView, shiftView, date });
   }, [timeView, shiftView, date]);
@@ -202,42 +271,39 @@ const Index = () => {
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-2 flex-1 min-w-[300px]">
-                <TimeToggle selected={timeView} onChange={handleTimeViewChange} />
-                <div className="inline-flex p-0.5 bg-slate-800/30 backdrop-blur-xl rounded-lg flex-1 ml-3 w-full">
+              <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+                <TimeToggle selected={timeView} onChange={setTimeView} />
+                <div className="inline-flex p-0.5 bg-slate-800/30 backdrop-blur-xl rounded-lg flex-1 ml-3">
                   <Button
                     variant="ghost"
-                    className={`flex-1 px-3 py-1.5 transition-all duration-300 text-sm font-medium rounded-md ${
+                    className={`flex-1 px-4 py-1.5 transition-all duration-300 text-sm font-medium rounded-md ${
                       shiftView === "day"
                         ? "bg-slate-700/50 text-white shadow-lg"
                         : "text-slate-400 hover:text-slate-100"
                     }`}
-                    onClick={() => handleShiftViewChange("day")}
+                    onClick={() => setShiftView(shiftView === "day" ? "both" : "day")}
                   >
-                    <Sun className="w-4 h-4 mr-1" />
+                    <Sun className="w-4 h-4 mr-2" />
                     Día
                   </Button>
                   <Button
                     variant="ghost"
-                    className={`flex-1 px-3 py-1.5 transition-all duration-300 text-sm font-medium rounded-md ${
+                    className={`flex-1 px-4 py-1.5 transition-all duration-300 text-sm font-medium rounded-md ${
                       shiftView === "night"
                         ? "bg-slate-700/50 text-white shadow-lg"
                         : "text-slate-400 hover:text-slate-100"
                     }`}
-                    onClick={() => handleShiftViewChange("night")}
+                    onClick={() => setShiftView(shiftView === "night" ? "both" : "night")}
                   >
-                    <Moon className="w-4 h-4 mr-1" />
+                    <Moon className="w-4 h-4 mr-2" />
                     Noche
                   </Button>
                 </div>
               </div>
               <DatePickerWithRange 
                 date={date} 
-                setDate={(newDate) => {
-                  setDate(newDate);
-                  // Se eliminó el toast aquí
-                }} 
-                className="flex-1 min-w-[300px]"
+                setDate={setDate} 
+                className="flex-1 min-w-[200px]"
                 viewMode={timeView}
               />
             </div>
@@ -254,19 +320,19 @@ const Index = () => {
               value={
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span>Ejecutado: {kpis.executed || '0K'}</span>
-                    <span>Programado: {kpis.totalProgrammed || '0K'}</span>
+                    <span>Ejecutado: {filteredData.kpis.executed}</span>
+                    <span>Programado: {filteredData.kpis.totalProgrammed}</span>
                   </div>
                   <div className="relative h-3 bg-slate-700/30 rounded-full overflow-hidden backdrop-blur-xl">
                     <div 
                       className="absolute inset-y-0 left-0 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full transition-all duration-500"
                       style={{ 
-                        width: `${kpis.executed && kpis.totalProgrammed ? calculateProgress(kpis.executed, kpis.totalProgrammed) : 0}%` 
+                        width: `${calculateProgress(filteredData.kpis.executed, filteredData.kpis.totalProgrammed)}%` 
                       }}
                     />
                   </div>
                   <div className="text-right text-sm text-slate-400">
-                    {kpis.executed && kpis.totalProgrammed ? calculateProgress(kpis.executed, kpis.totalProgrammed).toFixed(1) : 0}%
+                    {calculateProgress(filteredData.kpis.executed, filteredData.kpis.totalProgrammed).toFixed(1)}%
                   </div>
                 </div>
               }
@@ -278,25 +344,25 @@ const Index = () => {
             <KPICard
               title="Efi. Vol."
               icon={<Factory className="w-5 h-5 text-emerald-400" />}
-              value={kpis.efficiencyVol || '0%'}
+              value={filteredData.kpis.efficiencyVol}
               className="bg-gradient-to-br from-emerald-500/5 to-teal-500/5 hover:from-emerald-500/10 hover:to-teal-500/10 backdrop-blur-xl border-emerald-500/10"
             />
             <KPICard
               title="Cumplimiento"
               icon={<Pickaxe className="w-5 h-5 text-orange-400" />}
-              value={kpis.compliance || '0%'}
+              value={filteredData.kpis.compliance}
               className="bg-gradient-to-br from-orange-500/5 to-amber-500/5 hover:from-orange-500/10 hover:to-amber-500/10 backdrop-blur-xl border-orange-500/10"
             />
             <KPICard
               title="Kg/Tal"
               icon={<Truck className="w-5 h-5 text-rose-400" />}
-              value={kpis.kgTal || '0'}
+              value={filteredData.kpis.kgTal}
               className="bg-gradient-to-br from-rose-500/5 to-red-500/5 hover:from-rose-500/10 hover:to-red-500/10 backdrop-blur-xl border-rose-500/10"
             />
             <KPICard
               title="F. Avance"
               icon={<Drill className="w-5 h-5 text-violet-400" />}
-              value={kpis.fAdvance || '0%'}
+              value={filteredData.kpis.fAdvance}
               className="bg-gradient-to-br from-violet-500/5 to-purple-500/5 hover:from-violet-500/10 hover:to-purple-500/10 backdrop-blur-xl border-violet-500/10"
             />
           </div>
@@ -305,7 +371,7 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-6">
             <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl group">
-              <div className="p-4 sm:p-6">
+              <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <Pickaxe className="w-5 h-5 text-purple-400 group-hover:text-purple-300 transition-colors" />
@@ -316,7 +382,7 @@ const Index = () => {
                   <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-slate-300 transition-colors" />
                 </div>
                 <OperationsChart
-                  data={chartData}
+                  data={filteredData.chartData}
                   type="line"
                   title=""
                   shift={shiftView}
@@ -324,7 +390,7 @@ const Index = () => {
               </div>
             </div>
             <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl group">
-              <div className="p-4 sm:p-6">
+              <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <Factory className="w-5 h-5 text-orange-400 group-hover:text-orange-300 transition-colors" />
@@ -335,7 +401,7 @@ const Index = () => {
                   <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-slate-300 transition-colors" />
                 </div>
                 <OperationsChart
-                  data={chartData}
+                  data={filteredData.chartData}
                   type="bar"
                   title=""
                   shift={shiftView}
@@ -346,7 +412,7 @@ const Index = () => {
 
           <div className="space-y-6">
             <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl group">
-              <div className="p-4 sm:p-6">
+              <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <Hammer className="w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
@@ -363,7 +429,7 @@ const Index = () => {
               </div>
             </div>
             <div className="bg-slate-800/20 backdrop-blur-xl rounded-xl border border-slate-700/20 overflow-hidden shadow-xl group">
-              <div className="p-4 sm:p-6">
+              <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <Shovel className="w-5 h-5 text-violet-400 group-hover:text-violet-300 transition-colors" />
