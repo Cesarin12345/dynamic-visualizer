@@ -1,5 +1,5 @@
 
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, X } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,13 +36,13 @@ export function DatePickerWithRange({
   viewMode
 }: DatePickerWithRangeProps) {
   return (
-    <div className={cn("inline-flex items-center", className)}>
+    <div className={cn("inline-flex items-center gap-2", className)}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
             className={cn(
-              "justify-start text-left font-normal bg-slate-800/50 backdrop-blur-sm hover:bg-slate-800/70",
+              "justify-start text-left font-normal bg-slate-800/50 backdrop-blur-sm hover:bg-slate-800/70 flex-1",
               !date && "text-muted-foreground"
             )}
           >
@@ -126,6 +126,19 @@ export function DatePickerWithRange({
           </ScrollArea>
         </PopoverContent>
       </Popover>
+      
+      {date?.from && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-10 w-10 rounded-full bg-slate-800/50 backdrop-blur-sm hover:bg-slate-800/70"
+          onClick={() => setDate(undefined)}
+          title="Limpiar selección de fecha"
+        >
+          <X className="h-4 w-4" />
+          <span className="sr-only">Limpiar selección</span>
+        </Button>
+      )}
     </div>
   );
 }

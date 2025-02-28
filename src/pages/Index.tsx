@@ -52,23 +52,29 @@ const Index = () => {
   };
 
   useEffect(() => {
+    // Si no hay fecha seleccionada, usar el rango completo de datos
+    const effectiveDate = date || {
+      from: new Date(2024, 0, 1),
+      to: new Date(2024, 11, 31),
+    };
+    
     // Procesar datos para los gráficos según filtros
-    const datosOperaciones = procesarDatosParaGrafico(operationsData, timeView, shiftView, date);
+    const datosOperaciones = procesarDatosParaGrafico(operationsData, timeView, shiftView, effectiveDate);
     setChartData(datosOperaciones);
     
     // Obtener KPIs filtrados
-    const kpisCalculados = obtenerKPIs(operationsData, shiftView, date);
+    const kpisCalculados = obtenerKPIs(operationsData, shiftView, effectiveDate);
     setKpis(kpisCalculados);
     
     // Obtener datos de aceros filtrados
-    const datosAceros = obtenerDatosAceros(operationsData, timeView, shiftView, date);
+    const datosAceros = obtenerDatosAceros(operationsData, timeView, shiftView, effectiveDate);
     setBarData(datosAceros);
     
     // Obtener datos de explosivos filtrados
-    const datosExplosivos = obtenerDatosExplosivos(operationsData, timeView, shiftView, date);
+    const datosExplosivos = obtenerDatosExplosivos(operationsData, timeView, shiftView, effectiveDate);
     setExplosivesData(datosExplosivos);
     
-    console.log("Filtros actualizados:", { timeView, shiftView, date });
+    console.log("Filtros actualizados:", { timeView, shiftView, date: effectiveDate });
   }, [timeView, shiftView, date]);
 
   return (
