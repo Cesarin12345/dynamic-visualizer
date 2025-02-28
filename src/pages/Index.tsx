@@ -62,8 +62,8 @@ const Index = () => {
     const datosOperaciones = procesarDatosParaGrafico(operationsData, timeView, shiftView, effectiveDate);
     setChartData(datosOperaciones);
     
-    // Obtener KPIs filtrados
-    const kpisCalculados = obtenerKPIs(operationsData, shiftView, effectiveDate);
+    // Obtener KPIs filtrados, pasando también el timeView
+    const kpisCalculados = obtenerKPIs(operationsData, shiftView, effectiveDate, timeView);
     setKpis(kpisCalculados);
     
     // Obtener datos de aceros filtrados
