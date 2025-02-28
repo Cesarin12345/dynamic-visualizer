@@ -13,9 +13,21 @@ interface HorizontalBarChartProps {
 }
 
 const HorizontalBarChart = ({ data, title }: HorizontalBarChartProps) => {
+  // Si no hay datos, mostrar un mensaje
+  if (!data || data.length === 0) {
+    return (
+      <Card className="bg-transparent border-none">
+        {title && <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>}
+        <div className="h-[400px] w-full min-w-[300px] flex items-center justify-center">
+          <p className="text-slate-400">No hay datos disponibles para el período seleccionado</p>
+        </div>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="p-6 bg-background/30 backdrop-blur-sm border-slate-800/50">
-      <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>
+    <Card className="bg-transparent border-none">
+      {title && <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>}
       <div className="h-[400px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart

@@ -60,48 +60,4 @@ const KPICard = ({ title, value, className, large = false, icon }: KPICardProps)
   );
 };
 
-// Ejemplo de uso siguiendo la estructura de la imagen:
-export const KPICardsContainer = () => {
-  const kpiData = [
-    {
-      title: "Efi. Vol.",
-      value: "85.5%",
-      icon: <BarChart3 className="w-4 h-4 text-slate-400" />,
-      large: true
-    },
-    {
-      title: "Cumplimiento",
-      value: "92.3%",
-      icon: <Users className="w-4 h-4 text-slate-400" />,
-      large: true
-    },
-    {
-      title: "Kg/Tal",
-      value: "45.7",
-      icon: <Package className="w-4 h-4 text-slate-400" />,
-      large: true
-    },
-    {
-      title: "F. Avance",
-      value: "78.9%",
-      icon: <Timer className="w-4 h-4 text-slate-400" />,
-      large: true
-    }
-  ];
-
-  return (
-    <div className="grid grid-cols-12 gap-4">
-      {kpiData.map((kpi, index) => (
-        <KPICard
-          key={index}
-          title={kpi.title}
-          value={kpi.value}
-          icon={kpi.icon}
-          large={kpi.large}
-        />
-      ))}
-    </div>
-  );
-};
-
 export default KPICard;
