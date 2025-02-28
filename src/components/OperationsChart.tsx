@@ -16,6 +16,8 @@ interface ChartData {
   name: string;
   value1: number;
   value2: number;
+  date?: Date;
+  kpis?: any;
 }
 
 interface OperationsChartProps {
@@ -56,6 +58,18 @@ const CustomTooltip = ({ active, payload, label, type }: any) => {
 };
 
 const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartProps) => {
+  // Si no hay datos, mostrar un mensaje
+  if (!data || data.length === 0) {
+    return (
+      <Card className="bg-transparent border-none">
+        {title && <h3 className="text-lg font-semibold text-slate-100 mb-6">{title}</h3>}
+        <div className="h-[400px] w-full min-w-[300px] flex items-center justify-center">
+          <p className="text-slate-400">No hay datos disponibles para el período seleccionado</p>
+        </div>
+      </Card>
+    );
+  }
+
   const renderBars = () => {
     if (shift === "both") {
       return (

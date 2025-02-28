@@ -22,169 +22,13 @@ import { DatePickerWithRange } from "@/components/DatePickerWithRange";
 import { DateRange } from "react-day-picker";
 import { addDays } from "date-fns";
 import { Button } from "@/components/ui/button";
-
-const dummyData = {
-  month: {
-    day: {
-      kpis: {
-        totalProgrammed: "45.1K",
-        efficiencyVol: "94.2%",
-        executed: "42.3K",
-        compliance: "93.8%",
-        kgTal: "0.8",
-        fAdvance: "95.1%",
-      },
-      chartData: [
-        { name: "Ene", value1: 200, value2: 150 },
-        { name: "Feb", value1: 180, value2: 170 },
-        { name: "Mar", value1: 250, value2: 220 },
-        { name: "Abr", value1: 300, value2: 280 },
-        { name: "May", value1: 280, value2: 260 },
-        { name: "Jun", value1: 320, value2: 300 },
-        { name: "Jul", value1: 290, value2: 270 },
-        { name: "Ago", value1: 310, value2: 290 },
-        { name: "Sep", value1: 340, value2: 320 },
-        { name: "Oct", value1: 290, value2: 270 },
-        { name: "Nov", value1: 270, value2: 250 },
-        { name: "Dic", value1: 250, value2: 230 },
-      ],
-      barData: [
-        { name: "Brocas de 38", value: 215 },
-        { name: "Barra Conica 8", value: 1 },
-        { name: "Barra Conica 6", value: 12 },
-        { name: "Barra Conica 5", value: 6 },
-        { name: "Barra Conica 4", value: 31 },
-        { name: "Barra Conica 3", value: 3 },
-      ],
-      explosivesData: [
-        { name: "Mecha Rapida", value: 3000 },
-        { name: "Fanel Largo 4.8M", value: 60 },
-        { name: "E5000 1 X 12", value: 14349 },
-        { name: "E3000 1 1/4 X 12", value: 260 },
-        { name: "E3000 1 X 12", value: 20136 },
-        { name: "E1000 1 1/4 X 12", value: 1080 },
-        { name: "Cordon Detonante", value: 270 },
-        { name: "Carmex 2 x 8", value: 3062 },
-        { name: "Carmex 1 x 8", value: 5279 },
-      ],
-    },
-    night: {
-      kpis: {
-        totalProgrammed: "40.2K",
-        efficiencyVol: "91.6%",
-        executed: "35.9K",
-        compliance: "89.5%",
-        kgTal: "0.7",
-        fAdvance: "93.2%",
-      },
-      chartData: [
-        { name: "Ene", value1: 180, value2: 150 },
-        { name: "Feb", value1: 160, value2: 140 },
-        { name: "Mar", value1: 250, value2: 200 },
-        { name: "Abr", value1: 280, value2: 220 },
-        { name: "May", value1: 260, value2: 240 },
-        { name: "Jun", value1: 300, value2: 270 },
-        { name: "Jul", value1: 270, value2: 250 },
-        { name: "Ago", value1: 290, value2: 270 },
-        { name: "Sep", value1: 320, value2: 300 },
-        { name: "Oct", value1: 270, value2: 250 },
-        { name: "Nov", value1: 250, value2: 230 },
-        { name: "Dic", value1: 230, value2: 210 },
-      ],
-      barData: [
-        { name: "Brocas de 38", value: 185 },
-        { name: "Barra Conica 8", value: 2 },
-        { name: "Barra Conica 6", value: 10 },
-        { name: "Barra Conica 5", value: 4 },
-        { name: "Barra Conica 4", value: 25 },
-        { name: "Barra Conica 3", value: 5 },
-      ],
-      explosivesData: [
-        { name: "Mecha Rapida", value: 2500 },
-        { name: "Fanel Largo 4.8M", value: 50 },
-        { name: "E5000 1 X 12", value: 12000 },
-        { name: "E3000 1 1/4 X 12", value: 220 },
-        { name: "E3000 1 X 12", value: 18000 },
-        { name: "E1000 1 1/4 X 12", value: 950 },
-        { name: "Cordon Detonante", value: 220 },
-        { name: "Carmex 2 x 8", value: 2800 },
-        { name: "Carmex 1 x 8", value: 4500 },
-      ],
-    }
-  },
-  week: {
-    day: {
-      kpis: {
-        totalProgrammed: "12.1K",
-        efficiencyVol: "95.2%",
-        executed: "11.5K",
-        compliance: "94.1%",
-        kgTal: "0.9",
-        fAdvance: "96.7%",
-      },
-      chartData: [
-        { name: "S1", value1: 120, value2: 110 },
-        { name: "S2", value1: 150, value2: 140 },
-        { name: "S3", value1: 180, value2: 170 },
-        { name: "S4", value1: 160, value2: 150 },
-      ],
-      barData: [
-        { name: "Brocas de 38", value: 75 },
-        { name: "Barra Conica 8", value: 0 },
-        { name: "Barra Conica 6", value: 4 },
-        { name: "Barra Conica 5", value: 2 },
-        { name: "Barra Conica 4", value: 8 },
-        { name: "Barra Conica 3", value: 1 },
-      ],
-      explosivesData: [
-        { name: "Mecha Rapida", value: 800 },
-        { name: "Fanel Largo 4.8M", value: 15 },
-        { name: "E5000 1 X 12", value: 3500 },
-        { name: "E3000 1 1/4 X 12", value: 80 },
-        { name: "E3000 1 X 12", value: 5200 },
-        { name: "E1000 1 1/4 X 12", value: 250 },
-        { name: "Cordon Detonante", value: 70 },
-        { name: "Carmex 2 x 8", value: 800 },
-        { name: "Carmex 1 x 8", value: 1200 },
-      ],
-    },
-    night: {
-      kpis: {
-        totalProgrammed: "10.0K",
-        efficiencyVol: "93.2%",
-        executed: "9.0K",
-        compliance: "92.1%",
-        kgTal: "0.6",
-        fAdvance: "94.0%",
-      },
-      chartData: [
-        { name: "S1", value1: 100, value2: 90 },
-        { name: "S2", value1: 130, value2: 120 },
-        { name: "S3", value1: 160, value2: 150 },
-        { name: "S4", value1: 140, value2: 130 },
-      ],
-      barData: [
-        { name: "Brocas de 38", value: 65 },
-        { name: "Barra Conica 8", value: 1 },
-        { name: "Barra Conica 6", value: 3 },
-        { name: "Barra Conica 5", value: 1 },
-        { name: "Barra Conica 4", value: 6 },
-        { name: "Barra Conica 3", value: 2 },
-      ],
-      explosivesData: [
-        { name: "Mecha Rapida", value: 700 },
-        { name: "Fanel Largo 4.8M", value: 12 },
-        { name: "E5000 1 X 12", value: 3000 },
-        { name: "E3000 1 1/4 X 12", value: 70 },
-        { name: "E3000 1 X 12", value: 4800 },
-        { name: "E1000 1 1/4 X 12", value: 220 },
-        { name: "Cordon Detonante", value: 60 },
-        { name: "Carmex 2 x 8", value: 750 },
-        { name: "Carmex 1 x 8", value: 1100 },
-      ],
-    }
-  }
-};
+import { 
+  operationsData,
+  procesarDatosParaGrafico, 
+  obtenerKPIs,
+  obtenerDatosAceros,
+  obtenerDatosExplosivos
+} from "@/data/operationsData";
 
 type ShiftView = "day" | "night" | "both";
 
@@ -192,13 +36,14 @@ const Index = () => {
   const [timeView, setTimeView] = useState<"month" | "week">("month");
   const [shiftView, setShiftView] = useState<ShiftView>("both");
   const [date, setDate] = useState<DateRange | undefined>({
-    from: addDays(new Date(), -30),
-    to: new Date(),
+    from: addDays(new Date(2024, 0, 1), -30),
+    to: new Date(2024, 11, 31),
   });
 
-  const [filteredData, setFilteredData] = useState(dummyData.month.day);
-  const [barData, setBarData] = useState(dummyData.month.day.barData);
-  const [explosivesData, setExplosivesData] = useState(dummyData.month.day.explosivesData);
+  const [chartData, setChartData] = useState<any[]>([]);
+  const [kpis, setKpis] = useState<any>({});
+  const [barData, setBarData] = useState<any[]>([]);
+  const [explosivesData, setExplosivesData] = useState<any[]>([]);
 
   const calculateProgress = (executed: string, programmed: string) => {
     const execValue = parseFloat(executed.replace('K', ''));
@@ -206,50 +51,22 @@ const Index = () => {
     return (execValue / progValue) * 100;
   };
 
-  const getShiftData = (periodData: any, shift: ShiftView) => {
-    if (shift === "both") {
-      const combinedData = {
-        kpis: {
-          totalProgrammed: (parseFloat(periodData.day.kpis.totalProgrammed.replace('K', '')) + 
-                          parseFloat(periodData.night.kpis.totalProgrammed.replace('K', ''))).toFixed(1) + 'K',
-          efficiencyVol: ((parseFloat(periodData.day.kpis.efficiencyVol.replace('%', '')) + 
-                          parseFloat(periodData.night.kpis.efficiencyVol.replace('%', ''))) / 2).toFixed(1) + '%',
-          executed: (parseFloat(periodData.day.kpis.executed.replace('K', '')) + 
-                    parseFloat(periodData.night.kpis.executed.replace('K', ''))).toFixed(1) + 'K',
-          compliance: ((parseFloat(periodData.day.kpis.compliance.replace('%', '')) + 
-                      parseFloat(periodData.night.kpis.compliance.replace('%', ''))) / 2).toFixed(1) + '%',
-          kgTal: ((parseFloat(periodData.day.kpis.kgTal) + 
-                  parseFloat(periodData.night.kpis.kgTal)) / 2).toFixed(1),
-          fAdvance: ((parseFloat(periodData.day.kpis.fAdvance.replace('%', '')) + 
-                    parseFloat(periodData.night.kpis.fAdvance.replace('%', ''))) / 2).toFixed(1) + '%',
-        },
-        chartData: periodData.day.chartData.map((item: any, index: number) => ({
-          ...item,
-          value2: periodData.night.chartData[index].value2
-        })),
-        barData: periodData.day.barData,
-        explosivesData: periodData.day.explosivesData,
-      };
-      return combinedData;
-    }
-    return periodData[shift];
-  };
-
   useEffect(() => {
-    const periodData = timeView === "month" ? dummyData.month : dummyData.week;
-    const newData = getShiftData(periodData, shiftView);
-    setFilteredData(newData);
+    // Procesar datos para los gráficos según filtros
+    const datosOperaciones = procesarDatosParaGrafico(operationsData, timeView, shiftView, date);
+    setChartData(datosOperaciones);
     
-    // Actualizar los datos específicos para aceros y explosivos según el turno
-    if (shiftView === "both") {
-      // Para "both", mantenemos los datos del turno de día por defecto
-      setBarData(periodData.day.barData);
-      setExplosivesData(periodData.day.explosivesData);
-    } else {
-      // Para día o noche específicos, usamos los datos correspondientes
-      setBarData(periodData[shiftView].barData);
-      setExplosivesData(periodData[shiftView].explosivesData);
-    }
+    // Obtener KPIs filtrados
+    const kpisCalculados = obtenerKPIs(operationsData, shiftView, date);
+    setKpis(kpisCalculados);
+    
+    // Obtener datos de aceros filtrados
+    const datosAceros = obtenerDatosAceros(operationsData, timeView, shiftView, date);
+    setBarData(datosAceros);
+    
+    // Obtener datos de explosivos filtrados
+    const datosExplosivos = obtenerDatosExplosivos(operationsData, timeView, shiftView, date);
+    setExplosivesData(datosExplosivos);
     
     console.log("Filtros actualizados:", { timeView, shiftView, date });
   }, [timeView, shiftView, date]);
@@ -320,19 +137,19 @@ const Index = () => {
               value={
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span>Ejecutado: {filteredData.kpis.executed}</span>
-                    <span>Programado: {filteredData.kpis.totalProgrammed}</span>
+                    <span>Ejecutado: {kpis.executed || '0K'}</span>
+                    <span>Programado: {kpis.totalProgrammed || '0K'}</span>
                   </div>
                   <div className="relative h-3 bg-slate-700/30 rounded-full overflow-hidden backdrop-blur-xl">
                     <div 
                       className="absolute inset-y-0 left-0 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full transition-all duration-500"
                       style={{ 
-                        width: `${calculateProgress(filteredData.kpis.executed, filteredData.kpis.totalProgrammed)}%` 
+                        width: `${kpis.executed && kpis.totalProgrammed ? calculateProgress(kpis.executed, kpis.totalProgrammed) : 0}%` 
                       }}
                     />
                   </div>
                   <div className="text-right text-sm text-slate-400">
-                    {calculateProgress(filteredData.kpis.executed, filteredData.kpis.totalProgrammed).toFixed(1)}%
+                    {kpis.executed && kpis.totalProgrammed ? calculateProgress(kpis.executed, kpis.totalProgrammed).toFixed(1) : 0}%
                   </div>
                 </div>
               }
@@ -344,25 +161,25 @@ const Index = () => {
             <KPICard
               title="Efi. Vol."
               icon={<Factory className="w-5 h-5 text-emerald-400" />}
-              value={filteredData.kpis.efficiencyVol}
+              value={kpis.efficiencyVol || '0%'}
               className="bg-gradient-to-br from-emerald-500/5 to-teal-500/5 hover:from-emerald-500/10 hover:to-teal-500/10 backdrop-blur-xl border-emerald-500/10"
             />
             <KPICard
               title="Cumplimiento"
               icon={<Pickaxe className="w-5 h-5 text-orange-400" />}
-              value={filteredData.kpis.compliance}
+              value={kpis.compliance || '0%'}
               className="bg-gradient-to-br from-orange-500/5 to-amber-500/5 hover:from-orange-500/10 hover:to-amber-500/10 backdrop-blur-xl border-orange-500/10"
             />
             <KPICard
               title="Kg/Tal"
               icon={<Truck className="w-5 h-5 text-rose-400" />}
-              value={filteredData.kpis.kgTal}
+              value={kpis.kgTal || '0'}
               className="bg-gradient-to-br from-rose-500/5 to-red-500/5 hover:from-rose-500/10 hover:to-red-500/10 backdrop-blur-xl border-rose-500/10"
             />
             <KPICard
               title="F. Avance"
               icon={<Drill className="w-5 h-5 text-violet-400" />}
-              value={filteredData.kpis.fAdvance}
+              value={kpis.fAdvance || '0%'}
               className="bg-gradient-to-br from-violet-500/5 to-purple-500/5 hover:from-violet-500/10 hover:to-purple-500/10 backdrop-blur-xl border-violet-500/10"
             />
           </div>
@@ -382,7 +199,7 @@ const Index = () => {
                   <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-slate-300 transition-colors" />
                 </div>
                 <OperationsChart
-                  data={filteredData.chartData}
+                  data={chartData}
                   type="line"
                   title=""
                   shift={shiftView}
@@ -401,7 +218,7 @@ const Index = () => {
                   <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-slate-300 transition-colors" />
                 </div>
                 <OperationsChart
-                  data={filteredData.chartData}
+                  data={chartData}
                   type="bar"
                   title=""
                   shift={shiftView}
