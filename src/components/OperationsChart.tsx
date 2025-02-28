@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
+  Legend,
 } from "recharts";
 import { Card } from "@/components/ui/card";
 
@@ -16,6 +17,7 @@ interface ChartData {
   name: string;
   value1: number;
   value2: number;
+  month?: string;
   date?: Date;
   kpis?: any;
 }
@@ -70,6 +72,9 @@ const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartP
     );
   }
 
+  // Asegurarse de que solo tenemos a lo sumo 4 elementos
+  const chartData = data.length > 4 ? data.slice(0, 4) : data;
+
   const renderBars = () => {
     if (shift === "both") {
       return (
@@ -113,7 +118,7 @@ const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartP
       <div className="h-[400px] w-full min-w-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           {type === "line" ? (
-            <LineChart data={data}>
+            <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
               <XAxis
                 dataKey="name"
@@ -129,6 +134,10 @@ const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartP
               <Tooltip 
                 content={<CustomTooltip type="line" />}
                 wrapperStyle={{ outline: 'none' }}
+              />
+              <Legend 
+                verticalAlign="bottom"
+                height={36}
               />
               <Line
                 name="Programado"
@@ -148,7 +157,7 @@ const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartP
               />
             </LineChart>
           ) : (
-            <BarChart data={data}>
+            <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
               <XAxis
                 dataKey="name"
@@ -160,12 +169,16 @@ const OperationsChart = ({ data, type, title, shift = "both" }: OperationsChartP
                 stroke="#94a3b8"
                 tick={{ fill: "#94a3b8" }}
                 tickLine={{ stroke: "#94a3b8" }}
-                domain={[0, 10]}
-                tickCount={11}
+                domain={[0, 'dataMax']}
+                tickCount={5}
               />
               <Tooltip 
                 content={<CustomTooltip type="bar" />}
                 wrapperStyle={{ outline: 'none' }}
+              />
+              <Legend 
+                verticalAlign="bottom"
+                height={36}
               />
               {renderBars()}
             </BarChart>

@@ -1,6 +1,6 @@
 
 import { DateRange } from "react-day-picker";
-import { addDays, isAfter, isBefore, isSameDay, isWithinInterval } from "date-fns";
+import { addDays, isAfter, isBefore, isSameDay, isWithinInterval, startOfMonth, endOfMonth } from "date-fns";
 
 // Generamos datos históricos para todo el año 2024
 const generateHistoricalData = () => {
@@ -9,7 +9,7 @@ const generateHistoricalData = () => {
     "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
   ];
   
-  const weeks = Array.from({ length: 52 }, (_, i) => `S${i + 1}`);
+  const weeks = ["S1", "S2", "S3", "S4"];
   
   const monthlyData = months.map((month, idx) => {
     // Valores base que varían por mes
@@ -35,28 +35,34 @@ const generateHistoricalData = () => {
     };
   });
   
-  const weeklyData = weeks.map((week, idx) => {
-    // Valores base que varían por semana
-    const baseValue1 = 50 + Math.floor(Math.random() * 50);
-    const baseValue2 = baseValue1 - 5 - Math.floor(Math.random() * 10);
-    
-    // Generar fecha para cada semana
-    const date = addDays(new Date(2024, 0, 1), idx * 7);
-    
-    return {
-      name: week,
-      value1: baseValue1,
-      value2: baseValue2,
-      date,
-      kpis: {
-        totalProgrammed: `${(baseValue1 / 10).toFixed(1)}K`,
-        efficiencyVol: `${(85 + Math.random() * 10).toFixed(1)}%`,
-        executed: `${(baseValue2 / 10).toFixed(1)}K`,
-        compliance: `${(90 + Math.random() * 8).toFixed(1)}%`,
-        kgTal: (0.7 + Math.random() * 0.3).toFixed(1),
-        fAdvance: `${(88 + Math.random() * 8).toFixed(1)}%`,
-      }
-    };
+  // Para semanas, creamos datos para cada mes con sus semanas
+  const weeklyData = [];
+  
+  months.forEach((month, monthIdx) => {
+    weeks.forEach((week, weekIdx) => {
+      // Valores base que varían por semana
+      const baseValue1 = 50 + Math.floor(Math.random() * 50);
+      const baseValue2 = baseValue1 - 5 - Math.floor(Math.random() * 10);
+      
+      // Generar fecha para cada semana (aproximada dentro del mes)
+      const date = new Date(2024, monthIdx, (weekIdx + 1) * 7);
+      
+      weeklyData.push({
+        name: week,
+        month: month,
+        value1: baseValue1,
+        value2: baseValue2,
+        date,
+        kpis: {
+          totalProgrammed: `${(baseValue1 / 10).toFixed(1)}K`,
+          efficiencyVol: `${(85 + Math.random() * 10).toFixed(1)}%`,
+          executed: `${(baseValue2 / 10).toFixed(1)}K`,
+          compliance: `${(90 + Math.random() * 8).toFixed(1)}%`,
+          kgTal: (0.7 + Math.random() * 0.3).toFixed(1),
+          fAdvance: `${(88 + Math.random() * 8).toFixed(1)}%`,
+        }
+      });
+    });
   });
   
   return {
@@ -99,26 +105,32 @@ const generateSteelData = () => {
   });
   
   // Generar datos para cada semana
-  const weeklyData = Array.from({ length: 52 }, (_, weekIdx) => {
-    const weekDate = addDays(new Date(2024, 0, 1), weekIdx * 7);
-    
-    // Para cada tipo de acero
-    const steelItems = steelTypes.map(steelType => {
-      // Valores base que varían por semana y tipo
-      const baseValue = 20 + Math.floor(Math.random() * 80);
+  const weeklyData = [];
+  const months = 12;
+  const weeksPerMonth = 4;
+  
+  for (let month = 0; month < months; month++) {
+    for (let week = 0; week < weeksPerMonth; week++) {
+      const weekDate = new Date(2024, month, (week + 1) * 7);
       
-      return {
-        name: steelType,
-        value: baseValue,
-        date: weekDate
-      };
-    });
-    
-    return {
-      date: weekDate,
-      items: steelItems
-    };
-  });
+      // Para cada tipo de acero
+      const steelItems = steelTypes.map(steelType => {
+        // Valores base que varían por semana y tipo
+        const baseValue = 20 + Math.floor(Math.random() * 80);
+        
+        return {
+          name: steelType,
+          value: baseValue,
+          date: weekDate
+        };
+      });
+      
+      weeklyData.push({
+        date: weekDate,
+        items: steelItems
+      });
+    }
+  }
   
   return {
     monthly: monthlyData,
@@ -163,26 +175,32 @@ const generateExplosivesData = () => {
   });
   
   // Generar datos para cada semana
-  const weeklyData = Array.from({ length: 52 }, (_, weekIdx) => {
-    const weekDate = addDays(new Date(2024, 0, 1), weekIdx * 7);
-    
-    // Para cada tipo de explosivo
-    const explosiveItems = explosiveTypes.map(explosiveType => {
-      // Valores base que varían por semana y tipo
-      const baseValue = 500 + Math.floor(Math.random() * 5000);
+  const weeklyData = [];
+  const months = 12;
+  const weeksPerMonth = 4;
+  
+  for (let month = 0; month < months; month++) {
+    for (let week = 0; week < weeksPerMonth; week++) {
+      const weekDate = new Date(2024, month, (week + 1) * 7);
       
-      return {
-        name: explosiveType,
-        value: baseValue,
-        date: weekDate
-      };
-    });
-    
-    return {
-      date: weekDate,
-      items: explosiveItems
-    };
-  });
+      // Para cada tipo de explosivo
+      const explosiveItems = explosiveTypes.map(explosiveType => {
+        // Valores base que varían por semana y tipo
+        const baseValue = 500 + Math.floor(Math.random() * 5000);
+        
+        return {
+          name: explosiveType,
+          value: baseValue,
+          date: weekDate
+        };
+      });
+      
+      weeklyData.push({
+        date: weekDate,
+        items: explosiveItems
+      });
+    }
+  }
   
   return {
     monthly: monthlyData,
@@ -227,9 +245,30 @@ export function procesarDatosParaGrafico(
   dateRange: DateRange | undefined
 ) {
   // Seleccionar datos mensuales o semanales
-  const sourceData = timeView === "month" 
-    ? [...data.operations.monthly] 
-    : [...data.operations.weekly];
+  let sourceData;
+  
+  if (timeView === "month") {
+    sourceData = [...data.operations.monthly];
+  } else {
+    // Para semanas, limitamos a 4 items (S1, S2, S3, S4)
+    // Si hay un filtro de fecha, lo respetamos
+    sourceData = [...data.operations.weekly];
+    
+    if (dateRange && dateRange.from) {
+      // Filtrar por el rango de fechas
+      sourceData = filterDataByDateRange(sourceData, dateRange);
+      
+      // Extraer solo las semanas (S1, S2, S3, S4) - máximo 4
+      const uniqueWeeks = Array.from(new Set(sourceData.map(item => item.name)));
+      const limitedWeeks = uniqueWeeks.slice(0, 4);
+      
+      // Filtrar para mostrar solo esas semanas
+      sourceData = sourceData.filter(item => limitedWeeks.includes(item.name));
+    } else {
+      // Si no hay filtro de fecha, mostrar solo las primeras 4 semanas del año
+      sourceData = sourceData.slice(0, 4);
+    }
+  }
   
   // Filtrar por rango de fechas
   const filteredData = filterDataByDateRange(sourceData, dateRange);
@@ -237,6 +276,11 @@ export function procesarDatosParaGrafico(
   // Si no hay datos después del filtro, devolver array vacío
   if (filteredData.length === 0) {
     return [];
+  }
+  
+  // Para vista semanal, asegurarnos de que solo mostramos como máximo 4 items
+  if (timeView === "week" && filteredData.length > 4) {
+    return filteredData.slice(0, 4);
   }
   
   return filteredData;
