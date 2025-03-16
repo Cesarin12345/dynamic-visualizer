@@ -290,17 +290,10 @@ export function procesarDatosParaGrafico(
 export function obtenerKPIs(
   data: typeof operationsData,
   shiftView: "day" | "night" | "both",
-  dateRange: DateRange | undefined,
-  timeView?: "month" | "week"
+  dateRange: DateRange | undefined
 ) {
-  // Vamos a usar los datos mensuales o semanales según el timeView
-  let sourceData;
-  
-  if (timeView === "week") {
-    sourceData = [...data.operations.weekly];
-  } else {
-    sourceData = [...data.operations.monthly];
-  }
+  // Vamos a usar los datos mensuales para obtener los KPIs
+  const sourceData = [...data.operations.monthly];
   
   // Filtrar por rango de fechas
   const filteredData = filterDataByDateRange(sourceData, dateRange);
@@ -317,36 +310,22 @@ export function obtenerKPIs(
     };
   }
   
-  // Obtener el último KPI del periodo filtrado para representar el periodo actual
+  // Obtener el último KPI del periodo filtrado
   const latestKPI = filteredData[filteredData.length - 1].kpis;
-  
-  // Si es timeView es semana, ajustamos los valores para que sean más pequeños
-  let adjustedKPI = { ...latestKPI };
-  
-  if (timeView === "week") {
-    adjustedKPI = {
-      totalProgrammed: `${(parseFloat(latestKPI.totalProgrammed.replace('K', '')) * 0.25).toFixed(1)}K`,
-      efficiencyVol: `${(parseFloat(latestKPI.efficiencyVol.replace('%', '')) * 0.85).toFixed(1)}%`,
-      executed: `${(parseFloat(latestKPI.executed.replace('K', '')) * 0.25).toFixed(1)}K`,
-      compliance: `${(parseFloat(latestKPI.compliance.replace('%', '')) * 0.9).toFixed(1)}%`,
-      kgTal: (parseFloat(latestKPI.kgTal) * 0.8).toFixed(1),
-      fAdvance: `${(parseFloat(latestKPI.fAdvance.replace('%', '')) * 0.9).toFixed(1)}%`,
-    };
-  }
   
   // Si es turno día o noche, devolvemos los KPIs tal cual
   if (shiftView !== "both") {
-    return adjustedKPI;
+    return latestKPI;
   }
   
   // Si es ambos turnos, vamos a combinar los valores (simplificación)
   const combinedKPI = {
-    totalProgrammed: `${(parseFloat(adjustedKPI.totalProgrammed.replace('K', '')) * 1.8).toFixed(1)}K`,
-    efficiencyVol: adjustedKPI.efficiencyVol,
-    executed: `${(parseFloat(adjustedKPI.executed.replace('K', '')) * 1.8).toFixed(1)}K`,
-    compliance: adjustedKPI.compliance,
-    kgTal: (parseFloat(adjustedKPI.kgTal) * 1.2).toFixed(1),
-    fAdvance: adjustedKPI.fAdvance,
+    totalProgrammed: `${(parseFloat(latestKPI.totalProgrammed.replace('K', '')) * 1.8).toFixed(1)}K`,
+    efficiencyVol: latestKPI.efficiencyVol,
+    executed: `${(parseFloat(latestKPI.executed.replace('K', '')) * 1.8).toFixed(1)}K`,
+    compliance: latestKPI.compliance,
+    kgTal: (parseFloat(latestKPI.kgTal) * 1.2).toFixed(1),
+    fAdvance: latestKPI.fAdvance,
   };
   
   return combinedKPI;
