@@ -1,5 +1,5 @@
-
 import React, { useState } from "react";
+import Sidebar from "@/components/Sidebar";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 
@@ -7,9 +7,11 @@ const Index = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
 
   return (
-    <div className="h-screen overflow-hidden bg-background">
-      <div className="flex flex-col h-full overflow-hidden">
-        {/* Header with auth navigation link */}
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar />
+      
+      <div className="flex flex-col flex-1 overflow-hidden">
+        {/* Add Auth navigation link */}
         <div className="bg-background p-4 flex justify-between items-center border-b">
           <h1 className="text-xl font-bold">Dashboard</h1>
           <div className="flex gap-2">
