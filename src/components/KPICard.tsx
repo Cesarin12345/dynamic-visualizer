@@ -1,7 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ArrowUpRight, BarChart3, Users, Package, Timer } from "lucide-react";
+import { ArrowUpRight, ArrowUp, ArrowDown } from "lucide-react";
 
 interface KPICardProps {
   title: string;
@@ -9,9 +9,19 @@ interface KPICardProps {
   className?: string;
   large?: boolean;
   icon?: React.ReactNode;
+  trend?: "up" | "down" | "neutral";
+  trendValue?: string;
 }
 
-const KPICard = ({ title, value, className, large = false, icon }: KPICardProps) => {
+const KPICard = ({ 
+  title, 
+  value, 
+  className, 
+  large = false, 
+  icon,
+  trend,
+  trendValue 
+}: KPICardProps) => {
   return (
     <Card
       className={cn(
@@ -21,10 +31,13 @@ const KPICard = ({ title, value, className, large = false, icon }: KPICardProps)
         "backdrop-blur-xl border-slate-700/30",
         "shadow-xl shadow-slate-900/10",
         large ? "col-span-full" : "col-span-1",
-        "xs:col-span-6 sm:col-span-6 md:col-span-3 lg:col-span-3 xl:col-span-3", // Replicando el sistema de columnas de la imagen
+        "xs:col-span-6 sm:col-span-6 md:col-span-3 lg:col-span-3",
         className
       )}
     >
+      {/* Subtle glow effect */}
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-transparent via-slate-700/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 rounded-xl blur-sm" />
+      
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-slate-900/5 to-slate-900/20 pointer-events-none" />
       
@@ -49,6 +62,24 @@ const KPICard = ({ title, value, className, large = false, icon }: KPICardProps)
         )}>
           {value}
         </div>
+        
+        {trend && trendValue && (
+          <div className="flex items-center gap-1 mt-3">
+            {trend === "up" ? (
+              <ArrowUp className="w-4 h-4 text-emerald-400" />
+            ) : trend === "down" ? (
+              <ArrowDown className="w-4 h-4 text-rose-400" />
+            ) : null}
+            <span className={cn(
+              "text-xs font-medium",
+              trend === "up" ? "text-emerald-400" : 
+              trend === "down" ? "text-rose-400" : 
+              "text-slate-400"
+            )}>
+              {trendValue} vs anterior
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Hover effect gradient */}

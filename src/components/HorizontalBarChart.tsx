@@ -10,9 +10,10 @@ interface DataItem {
 interface HorizontalBarChartProps {
   data: DataItem[];
   title: string;
+  color?: string;
 }
 
-const HorizontalBarChart = ({ data, title }: HorizontalBarChartProps) => {
+const HorizontalBarChart = ({ data, title, color = "#f97316" }: HorizontalBarChartProps) => {
   // Si no hay datos, mostrar un mensaje
   if (!data || data.length === 0) {
     return (
@@ -35,27 +36,38 @@ const HorizontalBarChart = ({ data, title }: HorizontalBarChartProps) => {
             layout="vertical"
             margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
           >
-            <XAxis type="number" stroke="#94a3b8" />
+            <XAxis 
+              type="number" 
+              stroke="#94a3b8" 
+              tickLine={{ stroke: '#475569' }}
+              axisLine={{ stroke: '#475569' }}
+              tick={{ fill: "#94a3b8" }}
+            />
             <YAxis
               dataKey="name"
               type="category"
               stroke="#94a3b8"
               tick={{ fill: "#94a3b8" }}
+              tickLine={{ stroke: '#475569' }}
+              axisLine={{ stroke: '#475569' }}
             />
             <Tooltip
               contentStyle={{
                 backgroundColor: "#1e293b",
-                border: "none",
+                border: "1px solid #334155",
                 borderRadius: "0.5rem",
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
               }}
               itemStyle={{ color: "#f1f5f9" }}
-              labelStyle={{ color: "#94a3b8" }}
+              labelStyle={{ color: "#94a3b8", fontWeight: "bold", marginBottom: "5px" }}
+              cursor={{ fill: 'rgba(255,255,255,0.05)' }}
             />
             <Bar
               dataKey="value"
-              fill="#f97316"
+              fill={color}
               radius={[0, 4, 4, 0]}
-              barSize={20}
+              barSize={24}
+              animationDuration={1500}
             />
           </BarChart>
         </ResponsiveContainer>
