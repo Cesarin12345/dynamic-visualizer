@@ -12,7 +12,9 @@ import {
   Drill,
   Sun,
   Moon,
-  ChevronRight
+  ChevronRight,
+  TrendingUp,
+  TrendingDown
 } from "lucide-react";
 import KPICard from "@/components/KPICard";
 import TimeToggle from "@/components/TimeToggle";
@@ -45,11 +47,54 @@ const Index = () => {
   const [kpis, setKpis] = useState<any>({});
   const [barData, setBarData] = useState<any[]>([]);
   const [explosivesData, setExplosivesData] = useState<any[]>([]);
+  const [trends, setTrends] = useState<Record<string, {trend: "up" | "down" | "neutral", value: string}>>({});
 
   const calculateProgress = (executed: string, programmed: string) => {
     const execValue = parseFloat(executed.replace('K', ''));
     const progValue = parseFloat(programmed.replace('K', ''));
     return (execValue / progValue) * 100;
+  };
+
+  // Calcular tendencias comparando el primer y último valor en el rango de fechas
+  const calculateTrends = (data: any) => {
+    // Solo calculamos tendencias si hay al menos 2 períodos seleccionados
+    if (!date?.from || !date?.to || date.from === date.to) {
+      return {};
+    }
+    
+    const newTrends: Record<string, {trend: "up" | "down" | "neutral", value: string}> = {};
+    
+    // Obtener el primer y último valor para cada métrica
+    const firstValues = {
+      efficiencyVol: parseFloat(data.efficiencyVol?.replace('%', '') || '0'),
+      compliance: parseFloat(data.compliance?.replace('%', '') || '0'),
+      kgTal: parseFloat(data.kgTal || '0'),
+      fAdvance: parseFloat(data.fAdvance?.replace('%', '') || '0')
+    };
+    
+    const lastValues = {
+      efficiencyVol: parseFloat(data.previousEfficiencyVol?.replace('%', '') || '0'),
+      compliance: parseFloat(data.previousCompliance?.replace('%', '') || '0'),
+      kgTal: parseFloat(data.previousKgTal || '0'),
+      fAdvance: parseFloat(data.previousFAdvance?.replace('%', '') || '0')
+    };
+    
+    // Calcular diferencias porcentuales
+    Object.keys(firstValues).forEach(key => {
+      const first = firstValues[key as keyof typeof firstValues];
+      const last = lastValues[key as keyof typeof lastValues];
+      
+      if (first !== 0 && last !== 0) {
+        const diffPercent = ((first - last) / last) * 100;
+        const trend = diffPercent > 0 ? "up" : diffPercent < 0 ? "down" : "neutral";
+        newTrends[key] = {
+          trend,
+          value: `${Math.abs(diffPercent).toFixed(1)}%`
+        };
+      }
+    });
+    
+    return newTrends;
   };
 
   useEffect(() => {
@@ -66,6 +111,10 @@ const Index = () => {
     // Obtener KPIs filtrados
     const kpisCalculados = obtenerKPIs(operationsData, shiftView, effectiveDate);
     setKpis(kpisCalculados);
+    
+    // Calcular tendencias
+    const calculatedTrends = calculateTrends(kpisCalculados);
+    setTrends(calculatedTrends);
     
     // Obtener datos de aceros filtrados
     const datosAceros = obtenerDatosAceros(operationsData, timeView, shiftView, effectiveDate);
@@ -171,32 +220,32 @@ const Index = () => {
               icon={<Factory className="w-5 h-5 text-emerald-400" />}
               value={kpis.efficiencyVol || '0%'}
               className="bg-gradient-to-br from-emerald-500/5 to-teal-500/5 hover:from-emerald-500/10 hover:to-teal-500/10 backdrop-blur-xl border-emerald-500/10"
-              trend="up"
-              trendValue="3.2%"
+              trend={trends.efficiencyVol?.trend}
+              trendValue={trends.efficiencyVol?.value}
             />
             <KPICard
               title="Cumplimiento"
               icon={<Pickaxe className="w-5 h-5 text-amber-400" />}
               value={kpis.compliance || '0%'}
               className="bg-gradient-to-br from-amber-500/5 to-yellow-500/5 hover:from-amber-500/10 hover:to-yellow-500/10 backdrop-blur-xl border-amber-500/10"
-              trend="down"
-              trendValue="1.5%"
+              trend={trends.compliance?.trend}
+              trendValue={trends.compliance?.value}
             />
             <KPICard
               title="Kg/Tal"
               icon={<Truck className="w-5 h-5 text-rose-400" />}
               value={kpis.kgTal || '0'}
               className="bg-gradient-to-br from-rose-500/5 to-red-500/5 hover:from-rose-500/10 hover:to-red-500/10 backdrop-blur-xl border-rose-500/10"
-              trend="up"
-              trendValue="0.8%"
+              trend={trends.kgTal?.trend}
+              trendValue={trends.kgTal?.value}
             />
             <KPICard
               title="F. Avance"
               icon={<Drill className="w-5 h-5 text-blue-400" />}
               value={kpis.fAdvance || '0%'}
               className="bg-gradient-to-br from-blue-500/5 to-sky-500/5 hover:from-blue-500/10 hover:to-sky-500/10 backdrop-blur-xl border-blue-500/10"
-              trend="up"
-              trendValue="2.1%"
+              trend={trends.fAdvance?.trend}
+              trendValue={trends.fAdvance?.value}
             />
           </div>
         </div>

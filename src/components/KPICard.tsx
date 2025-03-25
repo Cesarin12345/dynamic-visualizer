@@ -1,7 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ArrowUpRight, ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUpRight, TrendingUp, TrendingDown } from "lucide-react";
 
 interface KPICardProps {
   title: string;
@@ -66,9 +66,9 @@ const KPICard = ({
         {trend && trendValue && (
           <div className="flex items-center gap-1 mt-3">
             {trend === "up" ? (
-              <ArrowUp className="w-4 h-4 text-emerald-400" />
+              <TrendingUp className="w-4 h-4 text-emerald-400" />
             ) : trend === "down" ? (
-              <ArrowDown className="w-4 h-4 text-rose-400" />
+              <TrendingDown className="w-4 h-4 text-rose-400" />
             ) : null}
             <span className={cn(
               "text-xs font-medium",
