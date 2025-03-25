@@ -1,93 +1,63 @@
 
-import { Card } from "@/components/ui/card";
+import React from "react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ArrowUpRight, TrendingUp, TrendingDown } from "lucide-react";
 
 interface KPICardProps {
   title: string;
-  value: string | number | React.ReactNode;
+  value: string | React.ReactNode;
+  icon: React.ReactNode;
   className?: string;
   large?: boolean;
-  icon?: React.ReactNode;
   trend?: "up" | "down" | "neutral";
   trendValue?: string;
 }
 
-const KPICard = ({ 
-  title, 
-  value, 
-  className, 
-  large = false, 
+const KPICard: React.FC<KPICardProps> = ({
+  title,
+  value,
   icon,
+  className,
+  large = false,
   trend,
-  trendValue 
-}: KPICardProps) => {
+  trendValue,
+}) => {
   return (
-    <Card
+    <div
       className={cn(
-        "relative overflow-hidden",
-        "group hover:scale-[1.02] hover:-translate-y-0.5 transition-all duration-300",
-        "bg-gradient-to-br from-slate-800/50 to-slate-900/50",
-        "backdrop-blur-xl border-slate-700/30",
-        "shadow-xl shadow-slate-900/10",
-        large ? "col-span-full" : "col-span-1",
-        "xs:col-span-6 sm:col-span-6 md:col-span-3 lg:col-span-3",
+        "bg-slate-800/30 backdrop-blur-xl rounded-xl border border-slate-700/30 overflow-hidden shadow-xl group hover:shadow-slate-700/20 transition-all duration-300 p-6",
+        large ? "col-span-2" : "",
         className
       )}
     >
-      {/* Subtle glow effect */}
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-transparent via-slate-700/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 rounded-xl blur-sm" />
-      
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-slate-900/5 to-slate-900/20 pointer-events-none" />
-      
-      {/* Content */}
-      <div className={cn(
-        "relative z-10",
-        large ? "p-8" : "p-6"
-      )}>
-        <div className="flex justify-between items-start">
-          <div className="flex items-center gap-2">
-            {icon}
-            <h3 className="text-slate-400 font-medium text-sm">{title}</h3>
-          </div>
-          <ArrowUpRight 
-            className="w-5 h-5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 duration-300" 
-          />
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-sm font-medium text-slate-400 group-hover:text-slate-300 transition-colors">
+          {title}
+        </h3>
+        <div className="h-8 w-8 bg-slate-700/50 rounded-full flex items-center justify-center">
+          {icon}
         </div>
-        <div className={cn(
-          "font-semibold text-slate-100 mt-2",
-          large ? "text-3xl" : "text-2xl",
-          typeof value !== 'string' && typeof value !== 'number' && "!text-base"
-        )}>
+      </div>
+      
+      <div className="mt-4 flex items-center">
+        <div className={`text-2xl font-bold ${typeof value === 'string' ? 'text-white' : ''}`}>
           {value}
         </div>
         
         {trend && trendValue && (
-          <div className="flex items-center gap-1 mt-3">
-            {trend === "up" ? (
-              <TrendingUp className="w-4 h-4 text-emerald-400" />
-            ) : trend === "down" ? (
-              <TrendingDown className="w-4 h-4 text-rose-400" />
+          <div className={`ml-3 flex items-center text-sm font-medium ${
+            trend === 'up' ? 'text-emerald-400' : trend === 'down' ? 'text-rose-400' : 'text-slate-400'
+          }`}>
+            {trend === 'up' ? (
+              <TrendingUp className="w-4 h-4 mr-1" />
+            ) : trend === 'down' ? (
+              <TrendingDown className="w-4 h-4 mr-1" />
             ) : null}
-            <span className={cn(
-              "text-xs font-medium",
-              trend === "up" ? "text-emerald-400" : 
-              trend === "down" ? "text-rose-400" : 
-              "text-slate-400"
-            )}>
-              {trendValue} vs anterior
-            </span>
+            <span>{trendValue}</span>
           </div>
         )}
       </div>
-
-      {/* Hover effect gradient */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-slate-500/0 via-slate-500/0 to-slate-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      
-      {/* Bottom gradient line */}
-      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-slate-500/10 to-transparent" />
-    </Card>
+    </div>
   );
 };
 

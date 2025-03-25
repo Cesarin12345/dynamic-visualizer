@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { 
   ArrowUpRight, 
@@ -55,16 +54,13 @@ const Index = () => {
     return (execValue / progValue) * 100;
   };
 
-  // Calcular tendencias comparando el primer y último valor en el rango de fechas
   const calculateTrends = (data: any) => {
-    // Solo calculamos tendencias si hay al menos 2 períodos seleccionados
-    if (!date?.from || !date?.to || date.from === date.to) {
+    if (!date?.from || !date?.to || date.from.getTime() === date.to.getTime()) {
       return {};
     }
     
     const newTrends: Record<string, {trend: "up" | "down" | "neutral", value: string}> = {};
     
-    // Obtener el primer y último valor para cada métrica
     const firstValues = {
       efficiencyVol: parseFloat(data.efficiencyVol?.replace('%', '') || '0'),
       compliance: parseFloat(data.compliance?.replace('%', '') || '0'),
@@ -79,7 +75,6 @@ const Index = () => {
       fAdvance: parseFloat(data.previousFAdvance?.replace('%', '') || '0')
     };
     
-    // Calcular diferencias porcentuales
     Object.keys(firstValues).forEach(key => {
       const first = firstValues[key as keyof typeof firstValues];
       const last = lastValues[key as keyof typeof lastValues];
@@ -94,33 +89,28 @@ const Index = () => {
       }
     });
     
+    console.log("Calculated trends:", newTrends);
     return newTrends;
   };
 
   useEffect(() => {
-    // Si no hay fecha seleccionada, usar el rango completo de datos
     const effectiveDate = date || {
       from: new Date(2024, 0, 1),
       to: new Date(2024, 11, 31),
     };
     
-    // Procesar datos para los gráficos según filtros
     const datosOperaciones = procesarDatosParaGrafico(operationsData, timeView, shiftView, effectiveDate);
     setChartData(datosOperaciones);
     
-    // Obtener KPIs filtrados
     const kpisCalculados = obtenerKPIs(operationsData, shiftView, effectiveDate);
     setKpis(kpisCalculados);
     
-    // Calcular tendencias
     const calculatedTrends = calculateTrends(kpisCalculados);
     setTrends(calculatedTrends);
     
-    // Obtener datos de aceros filtrados
     const datosAceros = obtenerDatosAceros(operationsData, timeView, shiftView, effectiveDate);
     setBarData(datosAceros);
     
-    // Obtener datos de explosivos filtrados
     const datosExplosivos = obtenerDatosExplosivos(operationsData, timeView, shiftView, effectiveDate);
     setExplosivesData(datosExplosivos);
     
