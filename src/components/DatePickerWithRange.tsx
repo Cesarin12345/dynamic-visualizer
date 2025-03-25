@@ -120,21 +120,25 @@ export function DatePickerWithRange({
       if (viewMode === "month") {
         const [month, year] = item.split('-');
         const monthIndex = months.indexOf(month);
-        fromDate = new Date(parseInt(year), monthIndex, 1);
-        toDate = new Date(parseInt(year), monthIndex + 1, 0);
+        if (monthIndex !== -1) {
+          fromDate = new Date(parseInt(year), monthIndex, 1);
+          toDate = new Date(parseInt(year), monthIndex + 1, 0);
+        }
       } else {
         const [month, weekNum, year] = item.split('-');
         const monthIndex = months.indexOf(month);
-        const weekNumber = parseInt(weekNum.replace('S', ''));
-        fromDate = new Date(parseInt(year), monthIndex, (weekNumber - 1) * 7 + 1);
-        toDate = new Date(parseInt(year), monthIndex, weekNumber * 7);
+        if (monthIndex !== -1) {
+          const weekNumber = parseInt(weekNum.replace('S', ''));
+          fromDate = new Date(parseInt(year), monthIndex, (weekNumber - 1) * 7 + 1);
+          toDate = new Date(parseInt(year), monthIndex, weekNumber * 7);
+        }
       }
       
-      if (!earliestDate || fromDate < earliestDate) {
+      if (fromDate && (!earliestDate || fromDate < earliestDate)) {
         earliestDate = fromDate;
       }
       
-      if (!latestDate || toDate > latestDate) {
+      if (toDate && (!latestDate || toDate > latestDate)) {
         latestDate = toDate;
       }
     });
@@ -161,6 +165,14 @@ export function DatePickerWithRange({
     return selectedItems.includes(`${month}-${weekNum}-${year}`);
   };
 
+  // Función segura para formatear fechas
+  const formatDate = (date: Date | undefined) => {
+    if (!date || isNaN(date.getTime())) {
+      return "";
+    }
+    return format(date, "LLL dd, y", { locale: es });
+  };
+
   return (
     <div className={cn("inline-flex items-center gap-2", className)}>
       <Popover>
@@ -176,8 +188,8 @@ export function DatePickerWithRange({
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, "LLL dd, y", { locale: es })} -{" "}
-                  {format(date.to, "LLL dd, y", { locale: es })}
+                  {formatDate(date.from)} -{" "}
+                  {formatDate(date.to)}
                   {selectedItems.length > 1 && 
                     <Badge variant="secondary" className="ml-2">
                       {selectedItems.length} selección(es)
@@ -185,7 +197,7 @@ export function DatePickerWithRange({
                   }
                 </>
               ) : (
-                format(date.from, "LLL dd, y", { locale: es })
+                formatDate(date.from)
               )
             ) : (
               <span>Seleccionar fecha</span>
