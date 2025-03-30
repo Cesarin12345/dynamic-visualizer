@@ -22,7 +22,7 @@ const KPICard: React.FC<KPICardProps> = ({
   trend,
   trendValue,
 }) => {
-  // Extract just the percentage number from trend value (e.g., "5.2%" from "5.2%")
+  // Extract just the percentage number from trend value
   const cleanTrendValue = trendValue && trendValue.match(/[\d.]+/)?.[0];
 
   return (
@@ -48,13 +48,19 @@ const KPICard: React.FC<KPICardProps> = ({
         </div>
         
         {trend && trendValue && (
-          <div className={`flex items-center gap-1 text-sm font-medium ${
-            trend === 'up' ? 'text-emerald-400' : trend === 'down' ? 'text-rose-400' : 'text-slate-400'
-          }`}>
+          <div 
+            className={`flex items-center gap-1 text-sm font-medium rounded-md px-2 py-0.5 ${
+              trend === 'up' 
+                ? 'text-emerald-400 bg-emerald-500/10' 
+                : trend === 'down' 
+                  ? 'text-rose-400 bg-rose-500/10' 
+                  : 'text-slate-400 bg-slate-500/10'
+            }`}
+          >
             {trend === 'up' ? (
-              <TrendingUp className="w-4 h-4" />
+              <TrendingUp className="w-3.5 h-3.5" strokeWidth={2.5} />
             ) : trend === 'down' ? (
-              <TrendingDown className="w-4 h-4" />
+              <TrendingDown className="w-3.5 h-3.5" strokeWidth={2.5} />
             ) : null}
             <span>{cleanTrendValue}%</span>
           </div>
