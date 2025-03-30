@@ -85,13 +85,20 @@ const Index = () => {
     console.log("First values for trends:", firstValues);
     console.log("Last values for trends:", lastValues);
     
-    const currentPeriod = timeView === "month" ? 
-      format(date.to || new Date(), "MMM yyyy") : 
-      `S${Math.ceil(date.to?.getDate() || 1 / 7)} ${format(date.to || new Date(), "MMM yyyy")}`;
+    // Formatear los períodos de una manera más concisa
+    let currentPeriod, previousPeriod;
     
-    const previousPeriod = timeView === "month" ? 
-      format(date.from || new Date(), "MMM yyyy") : 
-      `S${Math.ceil(date.from?.getDate() || 1 / 7)} ${format(date.from || new Date(), "MMM yyyy")}`;
+    if (timeView === "month") {
+      currentPeriod = format(date.to || new Date(), "MMM yyyy");
+      previousPeriod = format(date.from || new Date(), "MMM yyyy");
+    } else {
+      // Para vista semanal
+      const currentWeek = Math.ceil((date.to?.getDate() || 1) / 7);
+      const previousWeek = Math.ceil((date.from?.getDate() || 1) / 7);
+      
+      currentPeriod = `S${currentWeek} ${format(date.to || new Date(), "MMM yyyy")}`;
+      previousPeriod = `S${previousWeek} ${format(date.from || new Date(), "MMM yyyy")}`;
+    }
     
     const periodText = `${currentPeriod} vs ${previousPeriod}`;
     

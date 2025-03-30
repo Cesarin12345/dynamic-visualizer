@@ -11,7 +11,7 @@ interface KPICardProps {
   large?: boolean;
   trend?: "up" | "down" | "neutral";
   trendValue?: string;
-  trendPeriod?: string; // New prop for comparison periods
+  trendPeriod?: string; // Prop para períodos de comparación
 }
 
 const KPICard: React.FC<KPICardProps> = ({
@@ -24,8 +24,11 @@ const KPICard: React.FC<KPICardProps> = ({
   trendValue,
   trendPeriod,
 }) => {
-  // Extract just the percentage number from trend value
+  // Extraer solo el número de porcentaje del valor de tendencia
   const cleanTrendValue = trendValue && trendValue.match(/[\d.]+/)?.[0];
+  
+  // Formatear el período de comparación para que sea más conciso
+  const formattedPeriod = trendPeriod ? formatComparisonPeriod(trendPeriod) : "";
 
   return (
     <div
@@ -68,9 +71,9 @@ const KPICard: React.FC<KPICardProps> = ({
               <span>{cleanTrendValue}%</span>
             </div>
             
-            {trendPeriod && (
+            {formattedPeriod && (
               <span className="text-xs text-slate-500 truncate max-w-[150px]">
-                {trendPeriod}
+                {formattedPeriod}
               </span>
             )}
           </div>
@@ -78,6 +81,58 @@ const KPICard: React.FC<KPICardProps> = ({
       </div>
     </div>
   );
+};
+
+// Función para formatear el período de comparación más conciso
+const formatComparisonPeriod = (period: string): string => {
+  if (!period) return "";
+  
+  // Si el período ya tiene el formato "vs", extraemos las partes
+  if (period.includes(" vs ")) {
+    const [current, previous] = period.split(" vs ");
+    
+    // Verificamos si son semanas (formato SX)
+    const currentWeek = current.match(/S(\d+)/);
+    const previousWeek = previous.match(/S(\d+)/);
+    
+    if (currentWeek && previousWeek) {
+      // Extraer años si están presentes
+      const currentYear = current.match(/(\d{4})$/)?.[1];
+      const previousYear = previous.match(/(\d{4})$/)?.[1];
+      
+      // Si son años diferentes, incluimos el año
+      if (currentYear !== previousYear && currentYear && previousYear) {
+        return `S${currentWeek[1]}/${currentYear.substring(2)} vs S${previousWeek[1]}/${previousYear.substring(2)}`;
+      }
+      
+      // Si son del mismo año, solo mostramos las semanas
+      return `S${currentWeek[1]} vs S${previousWeek[1]}`;
+    }
+    
+    // Para comparaciones mensuales, abreviamos los meses y añadimos años si son diferentes
+    const currentMonth = current.match(/^([A-Za-z]+)/)?.[1];
+    const previousMonth = previous.match(/^([A-Za-z]+)/)?.[1];
+    
+    if (currentMonth && previousMonth) {
+      const currentYear = current.match(/(\d{4})$/)?.[1];
+      const previousYear = previous.match(/(\d{4})$/)?.[1];
+      
+      // Abreviar los meses (primeras 3 letras)
+      const shortCurrentMonth = currentMonth.substring(0, 3);
+      const shortPreviousMonth = previousMonth.substring(0, 3);
+      
+      // Si son años diferentes, incluimos el año
+      if (currentYear !== previousYear && currentYear && previousYear) {
+        return `${shortCurrentMonth}'${currentYear.substring(2)} vs ${shortPreviousMonth}'${previousYear.substring(2)}`;
+      }
+      
+      // Si son del mismo año, solo mostramos los meses
+      return `${shortCurrentMonth} vs ${shortPreviousMonth}`;
+    }
+  }
+  
+  // Si no podemos formatear, devolvemos el original
+  return period;
 };
 
 export default KPICard;
