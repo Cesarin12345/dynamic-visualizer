@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { 
   ArrowUpRight, 
@@ -55,12 +56,21 @@ const Index = () => {
   };
 
   const calculateTrends = (data: any) => {
-    if (!date?.from || !date?.to || date.from.getTime() === date.to.getTime()) {
+    // Check if date range is valid for trends calculation
+    if (!date?.from || !date?.to) {
+      console.log("Invalid date range for trends calculation");
+      return {};
+    }
+    
+    // Only calculate trends if there are at least two dates to compare
+    if (date.from.getTime() === date.to.getTime()) {
+      console.log("Same date selected, no trend to calculate");
       return {};
     }
     
     const newTrends: Record<string, {trend: "up" | "down" | "neutral", value: string}> = {};
     
+    // Get the current values for comparison
     const firstValues = {
       efficiencyVol: parseFloat(data.efficiencyVol?.replace('%', '') || '0'),
       compliance: parseFloat(data.compliance?.replace('%', '') || '0'),
@@ -68,6 +78,7 @@ const Index = () => {
       fAdvance: parseFloat(data.fAdvance?.replace('%', '') || '0')
     };
     
+    // Get the previous values for comparison
     const lastValues = {
       efficiencyVol: parseFloat(data.previousEfficiencyVol?.replace('%', '') || '0'),
       compliance: parseFloat(data.previousCompliance?.replace('%', '') || '0'),
@@ -75,10 +86,14 @@ const Index = () => {
       fAdvance: parseFloat(data.previousFAdvance?.replace('%', '') || '0')
     };
     
+    console.log("First values for trends:", firstValues);
+    console.log("Last values for trends:", lastValues);
+    
     Object.keys(firstValues).forEach(key => {
       const first = firstValues[key as keyof typeof firstValues];
       const last = lastValues[key as keyof typeof lastValues];
       
+      // Only calculate if we have valid numbers to compare
       if (first !== 0 && last !== 0) {
         const diffPercent = ((first - last) / last) * 100;
         const trend = diffPercent > 0 ? "up" : diffPercent < 0 ? "down" : "neutral";
@@ -86,10 +101,11 @@ const Index = () => {
           trend,
           value: `${Math.abs(diffPercent).toFixed(1)}%`
         };
+        console.log(`Trend calculated for ${key}: ${trend} ${Math.abs(diffPercent).toFixed(1)}%`);
       }
     });
     
-    console.log("Calculated trends:", newTrends);
+    console.log("Final calculated trends:", newTrends);
     return newTrends;
   };
 
@@ -105,6 +121,7 @@ const Index = () => {
     const kpisCalculados = obtenerKPIs(operationsData, shiftView, effectiveDate);
     setKpis(kpisCalculados);
     
+    // Calculate trends after KPIs are obtained
     const calculatedTrends = calculateTrends(kpisCalculados);
     setTrends(calculatedTrends);
     

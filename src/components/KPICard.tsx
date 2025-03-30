@@ -39,13 +39,13 @@ const KPICard: React.FC<KPICardProps> = ({
         </div>
       </div>
       
-      <div className="mt-4 flex items-center">
+      <div className="mt-4 flex items-center justify-between">
         <div className={`text-2xl font-bold ${typeof value === 'string' ? 'text-white' : ''}`}>
           {value}
         </div>
         
         {trend && trendValue && (
-          <div className={`ml-3 flex items-center text-sm font-medium ${
+          <div className={`flex items-center text-sm font-medium ${
             trend === 'up' ? 'text-emerald-400' : trend === 'down' ? 'text-rose-400' : 'text-slate-400'
           }`}>
             {trend === 'up' ? (
