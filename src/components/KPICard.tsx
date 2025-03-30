@@ -11,6 +11,7 @@ interface KPICardProps {
   large?: boolean;
   trend?: "up" | "down" | "neutral";
   trendValue?: string;
+  trendPeriod?: string; // New prop for comparison periods
 }
 
 const KPICard: React.FC<KPICardProps> = ({
@@ -21,6 +22,7 @@ const KPICard: React.FC<KPICardProps> = ({
   large = false,
   trend,
   trendValue,
+  trendPeriod,
 }) => {
   // Extract just the percentage number from trend value
   const cleanTrendValue = trendValue && trendValue.match(/[\d.]+/)?.[0];
@@ -49,20 +51,28 @@ const KPICard: React.FC<KPICardProps> = ({
         
         {trend && trendValue && (
           <div 
-            className={`flex items-center gap-1 text-sm font-medium rounded-md px-2 py-0.5 ${
+            className={`flex flex-col items-end gap-1`}
+          >
+            <div className={`flex items-center gap-1 text-sm font-medium rounded-md px-2 py-0.5 ${
               trend === 'up' 
                 ? 'text-emerald-400 bg-emerald-500/10' 
                 : trend === 'down' 
                   ? 'text-rose-400 bg-rose-500/10' 
                   : 'text-slate-400 bg-slate-500/10'
-            }`}
-          >
-            {trend === 'up' ? (
-              <TrendingUp className="w-3.5 h-3.5" strokeWidth={2.5} />
-            ) : trend === 'down' ? (
-              <TrendingDown className="w-3.5 h-3.5" strokeWidth={2.5} />
-            ) : null}
-            <span>{cleanTrendValue}%</span>
+            }`}>
+              {trend === 'up' ? (
+                <TrendingUp className="w-3.5 h-3.5" strokeWidth={2.5} />
+              ) : trend === 'down' ? (
+                <TrendingDown className="w-3.5 h-3.5" strokeWidth={2.5} />
+              ) : null}
+              <span>{cleanTrendValue}%</span>
+            </div>
+            
+            {trendPeriod && (
+              <span className="text-xs text-slate-500 truncate max-w-[150px]">
+                {trendPeriod}
+              </span>
+            )}
           </div>
         )}
       </div>

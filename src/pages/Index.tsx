@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { 
   ArrowUpRight, 
@@ -23,8 +22,7 @@ import HorizontalBarChart from "@/components/HorizontalBarChart";
 import MobileMenu from "@/components/MobileMenu";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
 import { DateRange } from "react-day-picker";
-import { addDays } from "date-fns";
-import { Button } from "@/components/ui/button";
+import { addDays, format } from "date-fns";
 import { 
   operationsData,
   procesarDatosParaGrafico, 
@@ -47,7 +45,7 @@ const Index = () => {
   const [kpis, setKpis] = useState<any>({});
   const [barData, setBarData] = useState<any[]>([]);
   const [explosivesData, setExplosivesData] = useState<any[]>([]);
-  const [trends, setTrends] = useState<Record<string, {trend: "up" | "down" | "neutral", value: string}>>({});
+  const [trends, setTrends] = useState<Record<string, {trend: "up" | "down" | "neutral", value: string, period?: string}>>({});
 
   const calculateProgress = (executed: string, programmed: string) => {
     const execValue = parseFloat(executed.replace('K', ''));
@@ -56,21 +54,18 @@ const Index = () => {
   };
 
   const calculateTrends = (data: any) => {
-    // Check if date range is valid for trends calculation
     if (!date?.from || !date?.to) {
       console.log("Invalid date range for trends calculation");
       return {};
     }
     
-    // Only calculate trends if there are at least two dates to compare
     if (date.from.getTime() === date.to.getTime()) {
       console.log("Same date selected, no trend to calculate");
       return {};
     }
     
-    const newTrends: Record<string, {trend: "up" | "down" | "neutral", value: string}> = {};
+    const newTrends: Record<string, {trend: "up" | "down" | "neutral", value: string, period?: string}> = {};
     
-    // Get the current values for comparison
     const firstValues = {
       efficiencyVol: parseFloat(data.efficiencyVol?.replace('%', '') || '0'),
       compliance: parseFloat(data.compliance?.replace('%', '') || '0'),
@@ -78,7 +73,6 @@ const Index = () => {
       fAdvance: parseFloat(data.fAdvance?.replace('%', '') || '0')
     };
     
-    // Get the previous values for comparison - if we don't have previous values, create some for demo
     const lastValues = {
       efficiencyVol: parseFloat(data.previousEfficiencyVol?.replace('%', '') || '0') || (firstValues.efficiencyVol * 0.9),
       compliance: parseFloat(data.previousCompliance?.replace('%', '') || '0') || (firstValues.compliance * 0.95),
@@ -89,19 +83,29 @@ const Index = () => {
     console.log("First values for trends:", firstValues);
     console.log("Last values for trends:", lastValues);
     
+    const currentPeriod = timeView === "month" ? 
+      format(date.to || new Date(), "MMM yyyy") : 
+      `S${Math.ceil(date.to?.getDate() || 1 / 7)} ${format(date.to || new Date(), "MMM yyyy")}`;
+    
+    const previousPeriod = timeView === "month" ? 
+      format(date.from || new Date(), "MMM yyyy") : 
+      `S${Math.ceil(date.from?.getDate() || 1 / 7)} ${format(date.from || new Date(), "MMM yyyy")}`;
+    
+    const periodText = `${currentPeriod} vs ${previousPeriod}`;
+    
     Object.keys(firstValues).forEach(key => {
       const first = firstValues[key as keyof typeof firstValues];
       const last = lastValues[key as keyof typeof lastValues];
       
-      // Always calculate a trend even if we had to create dummy previous values
       if (first !== 0) {
         const diffPercent = ((first - last) / Math.max(last, 0.1)) * 100;
         const trend = diffPercent > 0 ? "up" : diffPercent < 0 ? "down" : "neutral";
         newTrends[key] = {
           trend,
-          value: `${Math.abs(diffPercent).toFixed(1)}`
+          value: `${Math.abs(diffPercent).toFixed(1)}`,
+          period: periodText
         };
-        console.log(`Trend calculated for ${key}: ${trend} ${Math.abs(diffPercent).toFixed(1)}%`);
+        console.log(`Trend calculated for ${key}: ${trend} ${Math.abs(diffPercent).toFixed(1)}% (${periodText})`);
       }
     });
     
@@ -121,7 +125,6 @@ const Index = () => {
     const kpisCalculados = obtenerKPIs(operationsData, shiftView, effectiveDate);
     setKpis(kpisCalculados);
     
-    // Calculate trends after KPIs are obtained
     const calculatedTrends = calculateTrends(kpisCalculados);
     setTrends(calculatedTrends);
     
@@ -229,6 +232,7 @@ const Index = () => {
               className="bg-gradient-to-br from-emerald-500/5 to-teal-500/5 hover:from-emerald-500/10 hover:to-teal-500/10 backdrop-blur-xl border-emerald-500/10"
               trend={trends.efficiencyVol?.trend}
               trendValue={trends.efficiencyVol?.value}
+              trendPeriod={trends.efficiencyVol?.period}
             />
             <KPICard
               title="Cumplimiento"
@@ -237,6 +241,7 @@ const Index = () => {
               className="bg-gradient-to-br from-amber-500/5 to-yellow-500/5 hover:from-amber-500/10 hover:to-yellow-500/10 backdrop-blur-xl border-amber-500/10"
               trend={trends.compliance?.trend}
               trendValue={trends.compliance?.value}
+              trendPeriod={trends.compliance?.period}
             />
             <KPICard
               title="Kg/Tal"
@@ -245,6 +250,7 @@ const Index = () => {
               className="bg-gradient-to-br from-rose-500/5 to-red-500/5 hover:from-rose-500/10 hover:to-red-500/10 backdrop-blur-xl border-rose-500/10"
               trend={trends.kgTal?.trend}
               trendValue={trends.kgTal?.value}
+              trendPeriod={trends.kgTal?.period}
             />
             <KPICard
               title="F. Avance"
@@ -253,6 +259,7 @@ const Index = () => {
               className="bg-gradient-to-br from-blue-500/5 to-sky-500/5 hover:from-blue-500/10 hover:to-sky-500/10 backdrop-blur-xl border-blue-500/10"
               trend={trends.fAdvance?.trend}
               trendValue={trends.fAdvance?.value}
+              trendPeriod={trends.fAdvance?.period}
             />
           </div>
         </div>
