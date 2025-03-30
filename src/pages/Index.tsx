@@ -99,7 +99,7 @@ const Index = () => {
         const trend = diffPercent > 0 ? "up" : diffPercent < 0 ? "down" : "neutral";
         newTrends[key] = {
           trend,
-          value: `${Math.abs(diffPercent).toFixed(1)}%`
+          value: `${Math.abs(diffPercent).toFixed(1)}`
         };
         console.log(`Trend calculated for ${key}: ${trend} ${Math.abs(diffPercent).toFixed(1)}%`);
       }
