@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { 
   ArrowUpRight, 
@@ -15,6 +16,7 @@ import {
   TrendingUp,
   TrendingDown
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import KPICard from "@/components/KPICard";
 import TimeToggle from "@/components/TimeToggle";
 import OperationsChart from "@/components/OperationsChart";
